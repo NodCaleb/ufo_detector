@@ -23,14 +23,14 @@ description: "Task list for UFO Anomaly Detector App implementation"
 
 **Purpose**: Create the .NET solution, configure both projects, and establish the folder structure so every subsequent task has a valid home.
 
-- [ ] T001 Create .NET solution file `UfoDetector.sln` and MAUI app project `UfoDetector/UfoDetector.csproj` targeting `net10.0-android`
-- [ ] T002 Create xUnit test project `UfoDetector.Tests/UfoDetector.Tests.csproj` and add project reference to `UfoDetector`
-- [ ] T003 [P] Configure `UfoDetector/UfoDetector.csproj`: add NuGet packages `CommunityToolkit.Mvvm` 8.x, `SkiaSharp.Views.Maui.Controls`, `CommunityToolkit.Maui`; set `<TreatWarningsAsErrors>true</TreatWarningsAsErrors>`
-- [ ] T004 [P] Configure `UfoDetector.Tests/UfoDetector.Tests.csproj`: add `xunit`, `xunit.runner.visualstudio`, `Moq`, `Microsoft.NET.Test.Sdk`
-- [ ] T005 Create empty folder structure: `UfoDetector/Models/Enums/`, `UfoDetector/Services/`, `UfoDetector/ViewModels/`, `UfoDetector/Views/`, `UfoDetector/Controls/`, `UfoDetector/Resources/Fonts/`, `UfoDetector/Resources/Styles/`; mirror `UfoDetector.Tests/ViewModels/`, `UfoDetector.Tests/Services/`
-- [ ] T006 Add `ShareTechMono.ttf` (or closest monospace fallback) to `UfoDetector/Resources/Fonts/` and register in `UfoDetector/MauiProgram.cs`
-- [ ] T007 [P] Define phosphor-green palette and CRT scanline overlay colour in `UfoDetector/Resources/Styles/Colors.xaml`
-- [ ] T008 Configure `UfoDetector/Platforms/Android/MainActivity.cs` with `ScreenOrientation = ScreenOrientation.Portrait` and the full `[Activity]` attribute per R-005 (no manual `AndroidManifest.xml` edits)
+- [X] T001 Create .NET solution file `UfoDetector.sln` and MAUI app project `UfoDetector/UfoDetector.csproj` targeting `net10.0-android`
+- [X] T002 Create xUnit test project `UfoDetector.Tests/UfoDetector.Tests.csproj` and add project reference to `UfoDetector`
+- [X] T003 [P] Configure `UfoDetector/UfoDetector.csproj`: add NuGet packages `CommunityToolkit.Mvvm` 8.x, `SkiaSharp.Views.Maui.Controls`, `CommunityToolkit.Maui`; set `<TreatWarningsAsErrors>true</TreatWarningsAsErrors>`
+- [X] T004 [P] Configure `UfoDetector.Tests/UfoDetector.Tests.csproj`: add `xunit`, `xunit.runner.visualstudio`, `Moq`, `Microsoft.NET.Test.Sdk`
+- [X] T005 Create empty folder structure: `UfoDetector/Models/Enums/`, `UfoDetector/Services/`, `UfoDetector/ViewModels/`, `UfoDetector/Views/`, `UfoDetector/Controls/`, `UfoDetector/Resources/Fonts/`, `UfoDetector/Resources/Styles/`; mirror `UfoDetector.Tests/ViewModels/`, `UfoDetector.Tests/Services/`
+- [X] T006 Add `ShareTechMono.ttf` (or closest monospace fallback) to `UfoDetector/Resources/Fonts/` and register in `UfoDetector/MauiProgram.cs`
+- [X] T007 [P] Define phosphor-green palette and CRT scanline overlay colour in `UfoDetector/Resources/Styles/Colors.xaml`
+- [X] T008 Configure `UfoDetector/Platforms/Android/MainActivity.cs` with `ScreenOrientation = ScreenOrientation.Portrait` and the full `[Activity]` attribute per R-005 (no manual `AndroidManifest.xml` edits)
 
 **Checkpoint**: `dotnet build UfoDetector/UfoDetector.csproj -f net10.0-android` succeeds with zero warnings; `dotnet test UfoDetector.Tests/UfoDetector.Tests.csproj` succeeds (no tests yet).
 

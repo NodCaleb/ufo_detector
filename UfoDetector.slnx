@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="UfoDetector.Tests/UfoDetector.Tests.csproj" />
+  <Project Path="UfoDetector/UfoDetector.csproj" />
+</Solution>
