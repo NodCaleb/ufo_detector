@@ -44,31 +44,31 @@ description: "Task list for UFO Anomaly Detector App implementation"
 
 ### Enums (all parallelisable)
 
-- [ ] T009 [P] Create `DetectorMode` enum (`Active`, `Passive`) in `UfoDetector/Models/Enums/DetectorMode.cs`
-- [ ] T010 [P] Create `TransitionPhase` enum (`Idle`, `Appearing`, `Active`, `Fading`) in `UfoDetector/Models/Enums/TransitionPhase.cs`
-- [ ] T011 [P] Create `SensorStatus` enum (`Normal`, `Elevated`, `Anomaly`, `Danger`, `Critical`, `CriticalHigh`) in `UfoDetector/Models/Enums/SensorStatus.cs`
-- [ ] T012 [P] Create `BlipType` enum (`EM`, `Radiation`, `Ionisation`, `Thermal`, `Geomagnetic`, `Chrono`) in `UfoDetector/Models/Enums/BlipType.cs`
+- [X] T009 [P] Create `DetectorMode` enum (`Active`, `Passive`) in `UfoDetector/Models/Enums/DetectorMode.cs`
+- [X] T010 [P] Create `TransitionPhase` enum (`Idle`, `Appearing`, `Active`, `Fading`) in `UfoDetector/Models/Enums/TransitionPhase.cs`
+- [X] T011 [P] Create `SensorStatus` enum (`Normal`, `Elevated`, `Anomaly`, `Danger`, `Critical`, `CriticalHigh`) in `UfoDetector/Models/Enums/SensorStatus.cs`
+- [X] T012 [P] Create `BlipType` enum (`EM`, `Radiation`, `Ionisation`, `Thermal`, `Geomagnetic`, `Chrono`) in `UfoDetector/Models/Enums/BlipType.cs`
 
 ### Immutable Records (parallelisable)
 
-- [ ] T013 [P] Create `AnomalyTrigger` immutable record (Mode, SensitivityMin/Max, NoiseSuppMin/Max) in `UfoDetector/Models/AnomalyTrigger.cs`
-- [ ] T014 [P] Create `SensorTargetValues` immutable record (NeutronRadiation, NeutronStatus, Ionisation, IonisationStatus, GeomagneticField, GeomagneticStatus, ThermalAnomaly, ThermalStatus, ChronoAnomaly, ChronoStatus, InfrasoundBands double[20]) in `UfoDetector/Models/SensorTargetValues.cs` — per-channel `SensorStatus` fields used by SensorTickService when LerpProgress ≥ 0.5
-- [ ] T015 [P] Create `RadarBlipTemplate` immutable record (Type, Count, InitialDistanceMin/Max, DriftAngularSpeed, DriftRadialSpeed, IsFixed) in `UfoDetector/Models/RadarBlipTemplate.cs`
-- [ ] T016 [P] Create `Anomaly` immutable record (Id, Name, Narrative, Trigger, SensorTargets, RadarBlips) in `UfoDetector/Models/Anomaly.cs`
-- [ ] T017 [P] Create `SensorBaseline` immutable record (BaselineValue, NormalMax, ElevatedMax, CriticalThreshold) with all per-sensor threshold constants from data-model.md in `UfoDetector/Models/SensorBaseline.cs`
-- [ ] T018 [P] Create `SensorSnapshot` mutable record (Value, Unit, Status) in `UfoDetector/Models/SensorSnapshot.cs`
-- [ ] T019 [P] Create `RadarBlip` mutable record (Type, Angle, Distance, Intensity, DriftAngularSpeed, DriftRadialSpeed) in `UfoDetector/Models/RadarBlip.cs`
-- [ ] T020 Create `DetectorState` mutable record (Mode, Sensitivity, NoiseSuppression, ActiveAnomaly, Phase, LerpProgress, PendingAnomaly) in `UfoDetector/Models/DetectorState.cs` — depends on T009, T010, T016
+- [X] T013 [P] Create `AnomalyTrigger` immutable record (Mode, SensitivityMin/Max, NoiseSuppMin/Max) in `UfoDetector/Models/AnomalyTrigger.cs`
+- [X] T014 [P] Create `SensorTargetValues` immutable record (NeutronRadiation, NeutronStatus, Ionisation, IonisationStatus, GeomagneticField, GeomagneticStatus, ThermalAnomaly, ThermalStatus, ChronoAnomaly, ChronoStatus, InfrasoundBands double[20]) in `UfoDetector/Models/SensorTargetValues.cs` — per-channel `SensorStatus` fields used by SensorTickService when LerpProgress ≥ 0.5
+- [X] T015 [P] Create `RadarBlipTemplate` immutable record (Type, Count, InitialDistanceMin/Max, DriftAngularSpeed, DriftRadialSpeed, IsFixed) in `UfoDetector/Models/RadarBlipTemplate.cs`
+- [X] T016 [P] Create `Anomaly` immutable record (Id, Name, Narrative, Trigger, SensorTargets, RadarBlips) in `UfoDetector/Models/Anomaly.cs`
+- [X] T017 [P] Create `SensorBaseline` immutable record (BaselineValue, NormalMax, ElevatedMax, CriticalThreshold) with all per-sensor threshold constants from data-model.md in `UfoDetector/Models/SensorBaseline.cs`
+- [X] T018 [P] Create `SensorSnapshot` mutable record (Value, Unit, Status) in `UfoDetector/Models/SensorSnapshot.cs`
+- [X] T019 [P] Create `RadarBlip` mutable record (Type, Angle, Distance, Intensity, DriftAngularSpeed, DriftRadialSpeed) in `UfoDetector/Models/RadarBlip.cs`
+- [X] T020 Create `DetectorState` mutable record (Mode, Sensitivity, NoiseSuppression, ActiveAnomaly, Phase, LerpProgress, PendingAnomaly) in `UfoDetector/Models/DetectorState.cs` — depends on T009, T010, T016
 
 ### Anomaly Data
 
-- [ ] T021 Implement `AnomalyDefinitions.cs` as `static readonly IReadOnlyList<Anomaly>` with all 5 anomaly definitions from `contracts/anomaly-definitions.md` (triggers, sensor targets including explicit `SensorStatus` per channel, radar blip templates) in `UfoDetector/Models/AnomalyDefinitions.cs` — depends on T013–T016
+- [X] T021 Implement `AnomalyDefinitions.cs` as `static readonly IReadOnlyList<Anomaly>` with all 5 anomaly definitions from `contracts/anomaly-definitions.md` (triggers, sensor targets including explicit `SensorStatus` per channel, radar blip templates) in `UfoDetector/Models/AnomalyDefinitions.cs` — depends on T013–T016
 
 ### Service Interfaces
 
-- [ ] T022 [P] Create `IAnomalyEvaluator` interface (`Anomaly? Evaluate(DetectorState state)`) in `UfoDetector/Services/IAnomalyEvaluator.cs`
-- [ ] T023 [P] Create `ISensorTickService` interface (`StartAsync()`, `Stop()`) in `UfoDetector/Services/ISensorTickService.cs`
-- [ ] T024 [P] Create `ITransitionOrchestrator` interface (`void Step(DetectorState state, double elapsedSeconds)`) in `UfoDetector/Services/ITransitionOrchestrator.cs`
+- [X] T022 [P] Create `IAnomalyEvaluator` interface (`Anomaly? Evaluate(DetectorState state)`) in `UfoDetector/Services/IAnomalyEvaluator.cs`
+- [X] T023 [P] Create `ISensorTickService` interface (`StartAsync()`, `Stop()`) in `UfoDetector/Services/ISensorTickService.cs`
+- [X] T024 [P] Create `ITransitionOrchestrator` interface (`void Step(DetectorState state, double elapsedSeconds)`) in `UfoDetector/Services/ITransitionOrchestrator.cs`
 
 **Checkpoint**: `dotnet build` succeeds; all model types and interfaces exist with correct namespaces; `dotnet test` still passes (0 tests).
 
