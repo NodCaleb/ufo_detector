@@ -47,14 +47,22 @@ during fade.
 | Field | Type | Unit | Baseline (normal) |
 |-------|------|------|-------------------|
 | `NeutronRadiation` | `double` | мЗв/ч | ~3.2 |
+| `NeutronStatus` | `SensorStatus` | — | `Normal` |
 | `Ionisation` | `double` | % | ~12 |
+| `IonisationStatus` | `SensorStatus` | — | `Normal` |
 | `GeomagneticField` | `double` | нТл | ~47 |
+| `GeomagneticStatus` | `SensorStatus` | — | `Normal` |
 | `ThermalAnomaly` | `double` | °C | ~0.0 |
+| `ThermalStatus` | `SensorStatus` | — | `Normal` |
 | `ChronoAnomaly` | `double` | Δt seconds | ~0.003 |
+| `ChronoStatus` | `SensorStatus` | — | `Normal` |
 | `InfrasoundBands` | `double[]` (20 elements) | relative amplitude 0–1 | ~0.05 per bin |
 
 *Baseline values also defined in `SensorBaseline.cs` and used for ±3–5 % drift when no anomaly
-is active.*
+is active. When an anomaly is active and `LerpProgress ≥ 0.5`, each sensor's status is taken
+directly from the anomaly's `{Channel}Status` field rather than derived from `SensorBaseline`
+thresholds. This allows Anomaly 1's geomagnetic target (55 нТл) to display `Anomaly` (amber)
+while the identical-range baseline (~47 нТл) correctly displays `Normal`.*
 
 ---
 
@@ -74,13 +82,14 @@ Status thresholds per sensor:
 | Sensor | Unit | НОРМА | ПОВЫШЕН | АНОМАЛИЯ | ОПАСНОСТЬ / КРИТИЧНО |
 |--------|------|-------|---------|----------|----------------------|
 | Neutron | мЗв/ч | ≤ 5 | 5–20 | — | > 20 |
-| Ionisation | % | ≤ 25 | 25–60 | — | > 60 |
-| Geomagnetic | нТл | 20–60 | 60–100 | ~55 нТл (Anomaly 1) | > 100 |
+| Ionisation | % | ≤ 25 | 25–80 | — | > 80 |
+| Geomagnetic | нТл | ≤ 60 | 60–100 | *(anomaly-context only — see SensorTargetValues note)* | > 100 |
 | Thermal | °C | ≤ 1.0 | 1.0–2.5 | — | > 2.5 |
 | Chrono | Δt s | ≤ 0.05 | 0.05–0.3 | — | > 0.3 |
 
-*Geomagnetic uses the `Anomaly` status label when the value is in the 40–70 нТл amber band
-(slightly elevated from baseline but not yet critical).*
+*`SensorBaseline` thresholds apply only during baseline (no active anomaly or `LerpProgress < 0.5`).
+The АНОМАЛИЯ column is not reachable via thresholds alone — it is set explicitly in
+`SensorTargetValues.GeomagneticStatus` when an anomaly requires it (e.g. Anomaly 1 → `Anomaly`).*
 
 ---
 

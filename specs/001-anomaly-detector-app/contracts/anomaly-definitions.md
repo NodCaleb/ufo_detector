@@ -57,7 +57,7 @@ All boundary values are **inclusive** (FR-008).
 | Parameter | Value |
 |-----------|-------|
 | Mode | `Active` |
-| Sensitivity | 80–90 % |
+| Sensitivity | 80–89 % |
 | Noise suppression | 10–20 % |
 
 ### Sensor targets (at full activation)
@@ -205,7 +205,7 @@ All boundary values are **inclusive** (FR-008).
 | # | Name | Mode | Sensitivity | Noise supp. | Key sensor(s) |
 |---|------|------|------------|-------------|---------------|
 | 1 | Электромагнитный след | ПАССИВ | 60–70 % | 15–25 % | Geomagnetic ↑ (amber) |
-| 2 | Нейтронный выброс | АКТИВ | 80–90 % | 10–20 % | Neutron ↑↑ (red), Ionisation ↑ |
+| 2 | Нейтронный выброс | АКТИВ | 80–89 % | 10–20 % | Neutron ↑↑ (red), Ionisation ↑ |
 | 3 | Ионосферный пузырь | ПАССИВ | 30–40 % | 65–75 % | Ionisation ↑ + Infrasound peak |
 | 4 | Геомагнитный разлом | АКТИВ | 50–60 % | 40–50 % | Geomagnetic ↑↑ (red) |
 | 5 | Хронопертурбация | АКТИВ | 90–100 % | 0–10 % | Chrono ↑↑ (red) + Thermal ↑ + Ionisation ↑ |

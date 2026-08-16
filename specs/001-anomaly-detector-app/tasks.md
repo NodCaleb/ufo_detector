@@ -52,7 +52,7 @@ description: "Task list for UFO Anomaly Detector App implementation"
 ### Immutable Records (parallelisable)
 
 - [ ] T013 [P] Create `AnomalyTrigger` immutable record (Mode, SensitivityMin/Max, NoiseSuppMin/Max) in `UfoDetector/Models/AnomalyTrigger.cs`
-- [ ] T014 [P] Create `SensorTargetValues` immutable record (NeutronRadiation, Ionisation, GeomagneticField, ThermalAnomaly, ChronoAnomaly, InfrasoundBands double[20]) in `UfoDetector/Models/SensorTargetValues.cs`
+- [ ] T014 [P] Create `SensorTargetValues` immutable record (NeutronRadiation, NeutronStatus, Ionisation, IonisationStatus, GeomagneticField, GeomagneticStatus, ThermalAnomaly, ThermalStatus, ChronoAnomaly, ChronoStatus, InfrasoundBands double[20]) in `UfoDetector/Models/SensorTargetValues.cs` — per-channel `SensorStatus` fields used by SensorTickService when LerpProgress ≥ 0.5
 - [ ] T015 [P] Create `RadarBlipTemplate` immutable record (Type, Count, InitialDistanceMin/Max, DriftAngularSpeed, DriftRadialSpeed, IsFixed) in `UfoDetector/Models/RadarBlipTemplate.cs`
 - [ ] T016 [P] Create `Anomaly` immutable record (Id, Name, Narrative, Trigger, SensorTargets, RadarBlips) in `UfoDetector/Models/Anomaly.cs`
 - [ ] T017 [P] Create `SensorBaseline` immutable record (BaselineValue, NormalMax, ElevatedMax, CriticalThreshold) with all per-sensor threshold constants from data-model.md in `UfoDetector/Models/SensorBaseline.cs`
@@ -62,7 +62,7 @@ description: "Task list for UFO Anomaly Detector App implementation"
 
 ### Anomaly Data
 
-- [ ] T021 Implement `AnomalyDefinitions.cs` as `static readonly IReadOnlyList<Anomaly>` with all 5 anomaly definitions from `contracts/anomaly-definitions.md` (triggers, sensor targets, radar blip templates) in `UfoDetector/Models/AnomalyDefinitions.cs` — depends on T013–T016
+- [ ] T021 Implement `AnomalyDefinitions.cs` as `static readonly IReadOnlyList<Anomaly>` with all 5 anomaly definitions from `contracts/anomaly-definitions.md` (triggers, sensor targets including explicit `SensorStatus` per channel, radar blip templates) in `UfoDetector/Models/AnomalyDefinitions.cs` — depends on T013–T016
 
 ### Service Interfaces
 
@@ -90,8 +90,8 @@ description: "Task list for UFO Anomaly Detector App implementation"
 - [ ] T027 [US1] Implement `SensorTickService`: ~100 ms `IDispatcherTimer` loop; apply ±3–5 % random drift per sensor; notify `DetectorViewModel` via callback; implement `StartAsync()`/`Stop()` from `ISensorTickService` in `UfoDetector/Services/SensorTickService.cs`
 - [ ] T028 [US1] Implement `DetectorViewModel` as `partial class` using `[ObservableProperty]`: flat observable properties for all 6 sensor values, units, and status labels; accepts `ISensorTickService` and `ITransitionOrchestrator` via constructor injection in `UfoDetector/ViewModels/DetectorViewModel.cs`
 - [ ] T029 [US1] Register `SensorTickService`, `TransitionOrchestrator` (stub), and `DetectorViewModel` in DI in `UfoDetector/MauiProgram.cs`
-- [ ] T030 [US1] Implement `RadarCanvasView` (`SKGLView` subclass, `EnableRenderLoop = true`): rotating sweep line, 3 concentric range rings, blip fade after sweep — all `SKPaint`/`SKPath` pre-allocated as fields, zero allocations inside `PaintSurface` per R-002 in `UfoDetector/Controls/RadarCanvasView.cs`
-- [ ] T031 [US1] Implement `InfrasoundCanvasView` (`SKGLView` subclass, `EnableRenderLoop = true`): 20-bin animated bar graph, dashed alarm threshold line — all `SKPaint` pre-allocated, zero allocations inside `PaintSurface` per R-002 in `UfoDetector/Controls/InfrasoundCanvasView.cs`
+- [ ] T030 [US1] Implement `RadarCanvasView` (`SKGLView` subclass, `EnableRenderLoop = true`): rotating sweep line, 3 concentric range rings, blip fade after sweep — all `SKPaint`/`SKPath` pre-allocated as fields, zero allocations inside `PaintSurface` per Constitution Principle IV in `UfoDetector/Controls/RadarCanvasView.cs`
+- [ ] T031 [US1] Implement `InfrasoundCanvasView` (`SKGLView` subclass, `EnableRenderLoop = true`): 20-bin animated bar graph, dashed alarm threshold line — all `SKPaint` pre-allocated, zero allocations inside `PaintSurface` per Constitution Principle IV in `UfoDetector/Controls/InfrasoundCanvasView.cs`
 - [ ] T032 [US1] Create `DetectorPage.xaml`: 6 sensor gauge panels (numeric label, unit label, status label, fill bar), `RadarCanvasView`, `InfrasoundCanvasView`; bind all sensor properties to `DetectorViewModel` in `UfoDetector/Views/DetectorPage.xaml`
 - [ ] T033 [US1] Wire `DetectorPage.xaml.cs`: constructor (resolve `DetectorViewModel` via DI, set `BindingContext`), `Loaded` handler calls `SensorTickService.StartAsync()` in `UfoDetector/Views/DetectorPage.xaml.cs`
 - [ ] T034 [US1] Configure `AppShell.xaml` to register and navigate to `DetectorPage` as the root route in `UfoDetector/AppShell.xaml`
@@ -114,7 +114,7 @@ description: "Task list for UFO Anomaly Detector App implementation"
 
 - [ ] T036 [US2] Add `[RelayCommand] ToggleMode()` and `[ObservableProperty] DetectorMode Mode` to `DetectorViewModel`; on mode change call `IAnomalyEvaluator.Evaluate()` stub; update LED indicator property in `UfoDetector/ViewModels/DetectorViewModel.cs`
 - [ ] T037 [US2] Add `[ObservableProperty] int Sensitivity` and `[ObservableProperty] int NoiseSuppression` to `DetectorViewModel`; persist both via `Microsoft.Maui.Storage.Preferences` on set; restore from `Preferences` in constructor in `UfoDetector/ViewModels/DetectorViewModel.cs`
-- [ ] T038 [US2] Add controls panel to `DetectorPage.xaml`: mode toggle `Button` with LED indicator, sensitivity `Slider` (0–100, rotated 270° per R-001 with swapped Width/Height), noise-suppression `Slider` (0–100, rotated 270°), numeric labels bound to `Sensitivity` and `NoiseSuppression` in `UfoDetector/Views/DetectorPage.xaml`
+- [ ] T038 [US2] Add controls panel to `DetectorPage.xaml`: mode toggle `Button` with LED indicator, sensitivity `Slider` (0–100, rotated 270° with swapped Width/Height per spec.md Assumptions — if MAUI Slider touch events mis-map on Android, replace with custom SkiaSharp touch-drag control), noise-suppression `Slider` (0–100, rotated 270°), numeric labels bound to `Sensitivity` and `NoiseSuppression` in `UfoDetector/Views/DetectorPage.xaml`
 - [ ] T039 [US2] Style the mode toggle LED indicator (green = АКТИВ, amber/off = ПАССИВ) using `Colors.xaml` palette entries and a `Style` trigger in `UfoDetector/Views/DetectorPage.xaml`
 
 **Checkpoint**: `dotnet test` passes (T035 green). On device: toggle cycles correctly, sliders update labels, values survive app restart. Story 2 demonstrable independently of anomaly logic.
@@ -129,7 +129,7 @@ description: "Task list for UFO Anomaly Detector App implementation"
 
 ### Tests for User Story 3 (Write FIRST — must FAIL before implementation)
 
-- [ ] T040 [P] [US3] Write `AnomalyEvaluatorTests`: assert each of the 5 anomalies returns its correct `Anomaly` record when conditions match; assert `null` returned for no-match; assert boundary values are inclusive (sensitivity = 60 % triggers Anomaly 1; sensitivity = 59 % does not) in `UfoDetector.Tests/Services/AnomalyEvaluatorTests.cs`
+- [ ] T040 [P] [US3] Write `AnomalyEvaluatorTests`: assert each of the 5 anomalies returns its correct `Anomaly` record when conditions match; assert `null` returned for no-match; assert boundary values are inclusive (sensitivity = 60 % triggers Anomaly 1; sensitivity = 59 % does not); assert no two anomalies match simultaneously for any (Mode, Sensitivity, NoiseSuppression) triple in `UfoDetector.Tests/Services/AnomalyEvaluatorTests.cs`
 - [ ] T041 [P] [US3] Write `TransitionOrchestratorTests`: assert `LerpProgress` reaches 1.0 after `2500 ms / tickInterval` steps (appear); assert `LerpProgress` reaches 0.0 after `1500 ms / tickInterval` steps (fade); assert `PendingAnomaly` is not promoted to `ActiveAnomaly` until `LerpProgress ≤ 0.02` (FR-011) in `UfoDetector.Tests/Services/TransitionOrchestratorTests.cs`
 
 ### Implementation for User Story 3
@@ -152,11 +152,11 @@ description: "Task list for UFO Anomaly Detector App implementation"
 
 ### Tests for User Story 4 (Write FIRST — must FAIL before implementation)
 
-- [ ] T047 [P] [US4] Extend `AnomalyEvaluatorTests`: for each of the 5 anomalies assert the returned `Anomaly` record's `SensorTargets` and `RadarBlips` match `contracts/anomaly-definitions.md` exactly (values, units, blip types, counts) in `UfoDetector.Tests/Services/AnomalyEvaluatorTests.cs`
+- [ ] T047 [P] [US4] Extend `AnomalyEvaluatorTests`: for each of the 5 anomalies assert the returned `Anomaly` record's `SensorTargets` and `RadarBlips` match `contracts/anomaly-definitions.md` exactly (values, units, blip types, counts, and per-channel `SensorStatus` fields) in `UfoDetector.Tests/Services/AnomalyEvaluatorTests.cs`
 
 ### Implementation for User Story 4
 
-- [ ] T048 [US4] Update `SensorTickService`: when `Phase` is `Appearing` or `Active`, lerp each sensor channel from `SensorBaseline` toward `SensorTargetValues` using `LerpProgress`; update `SensorStatus` based on `SensorBaseline` thresholds after each lerp step in `UfoDetector/Services/SensorTickService.cs`
+- [ ] T048 [US4] Update `SensorTickService`: when `Phase` is `Appearing` or `Active`, lerp each sensor channel from `SensorBaseline` toward `SensorTargetValues` using `LerpProgress`; derive `SensorStatus` from `SensorBaseline` thresholds when `LerpProgress < 0.5`, and use `SensorTargetValues.{Channel}Status` directly when `LerpProgress ≥ 0.5` in `UfoDetector/Services/SensorTickService.cs`
 - [ ] T049 [US4] Update `RadarCanvasView`: on `ActiveAnomaly` change, instantiate `RadarBlip` list from `RadarBlipTemplate.Count` range; apply per-frame angular/radial drift; intensity decays after sweep passes and resets on revisit; clear blips when `Phase` returns to `Idle` in `UfoDetector/Controls/RadarCanvasView.cs`
 - [ ] T050 [US4] Update `InfrasoundCanvasView`: lerp the 20-band amplitude array from baseline (~0.05 per bin) toward `SensorTargetValues.InfrasoundBands` using `LerpProgress`; bars exceeding the alarm threshold render in red per quickstart.md V-7 procedure in `UfoDetector/Controls/InfrasoundCanvasView.cs`
 - [ ] T051 [US4] Add `Narrative` label to `DetectorPage.xaml` bound to `ActiveAnomaly?.Narrative`; show only when `Phase` is `Active` or `Appearing`; hide (collapsed) during `Idle` and `Fading` in `UfoDetector/Views/DetectorPage.xaml`
@@ -172,11 +172,12 @@ description: "Task list for UFO Anomaly Detector App implementation"
 
 - [ ] T053 [P] Verify `<TreatWarningsAsErrors>true</TreatWarningsAsErrors>` is enforced: run `dotnet build UfoDetector/UfoDetector.csproj -f net10.0-android` and confirm zero warnings across all source files
 - [ ] T054 Run `dotnet test UfoDetector.Tests/UfoDetector.Tests.csproj` and confirm 100 % pass — covers `DetectorViewModelTests`, `AnomalyEvaluatorTests`, `SensorTickServiceTests`, `TransitionOrchestratorTests`
-- [ ] T055 [P] Audit all `SKPaint`, `SKPath`, and `SKRect` usages in `UfoDetector/Controls/RadarCanvasView.cs` and `UfoDetector/Controls/InfrasoundCanvasView.cs`: confirm every allocation is a class field; confirm `new` is absent from `PaintSurface`/`OnPaintSurface` bodies per R-002
+- [ ] T055 [P] Audit all `SKPaint`, `SKPath`, and `SKRect` usages in `UfoDetector/Controls/RadarCanvasView.cs` and `UfoDetector/Controls/InfrasoundCanvasView.cs`: confirm every allocation is a class field; confirm `new` is absent from `PaintSurface`/`OnPaintSurface` bodies per Constitution Principle IV
 - [ ] T056 [P] Verify `UfoDetector/Platforms/Android/AndroidManifest.xml` does not contain `android.permission.INTERNET` (FR-014)
 - [ ] T057 Execute quickstart.md scenarios V-1 through V-5 on emulator or device; record pass/fail for each acceptance criterion in `specs/001-anomaly-detector-app/quickstart.md`
 - [ ] T058 Execute quickstart.md V-6 GPU profiler validation: connect Android GPU Profiler; confirm all frames ≤ 16.7 ms for both canvases during active-anomaly state for 30 continuous seconds (SC-002, Constitution Principle IV)
 - [ ] T059 [P] Confirm all services (`AnomalyEvaluator`, `SensorTickService`, `TransitionOrchestrator`) and `DetectorViewModel` are registered in `UfoDetector/MauiProgram.cs`; confirm no logic exists in `DetectorPage.xaml.cs` beyond constructor and `Loaded` hook (MVVM Principle II)
+- [ ] T060 Execute 30-minute soak test on emulator or device (SC-006): launch app, enter each of the 5 anomaly combinations in sequence, then leave running at baseline; use Android Studio Memory Profiler to confirm heap growth < 10 MB over the session; confirm frame rate remains ≥ 45 fps throughout; record results in `specs/001-anomaly-detector-app/quickstart.md` as scenario V-8
 
 ---
 
@@ -219,7 +220,7 @@ description: "Task list for UFO Anomaly Detector App implementation"
 
 **Phase 6**: T047 (test written first); T048 ‖ T049 ‖ T050 in parallel after T047; T051 ‖ T052 in parallel after T048
 
-**Phase 7**: T053 ‖ T055 ‖ T056 ‖ T059 in parallel; T054 sequential; T057 after T054; T058 after T057
+**Phase 7**: T053 ‖ T055 ‖ T056 ‖ T059 in parallel; T054 sequential; T057 after T054; T058 after T057; T060 after T057
 
 ---
 
