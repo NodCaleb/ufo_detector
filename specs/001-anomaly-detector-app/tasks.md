@@ -82,19 +82,19 @@ description: "Task list for UFO Anomaly Detector App implementation"
 
 ### Tests for User Story 1 (Write FIRST — must FAIL before implementation)
 
-- [ ] T025 [P] [US1] Write `SensorTickServiceTests`: assert drift stays within ±5 % of baseline, update period ~100 ms tick interval, baseline values correct per `SensorBaseline` constants in `UfoDetector.Tests/Services/SensorTickServiceTests.cs`
-- [ ] T026 [P] [US1] Write `DetectorViewModelTests`: assert initial sensor snapshot values match baselines, `SensorStatus` is `Normal` for all channels at startup in `UfoDetector.Tests/ViewModels/DetectorViewModelTests.cs`
+- [X] T025 [P] [US1] Write `SensorTickServiceTests`: assert drift stays within ±5 % of baseline, update period ~100 ms tick interval, baseline values correct per `SensorBaseline` constants in `UfoDetector.Tests/Services/SensorTickServiceTests.cs`
+- [X] T026 [P] [US1] Write `DetectorViewModelTests`: assert initial sensor snapshot values match baselines, `SensorStatus` is `Normal` for all channels at startup in `UfoDetector.Tests/ViewModels/DetectorViewModelTests.cs`
 
 ### Implementation for User Story 1
 
-- [ ] T027 [US1] Implement `SensorTickService`: ~100 ms `IDispatcherTimer` loop; apply ±3–5 % random drift per sensor; notify `DetectorViewModel` via callback; implement `StartAsync()`/`Stop()` from `ISensorTickService` in `UfoDetector/Services/SensorTickService.cs`
-- [ ] T028 [US1] Implement `DetectorViewModel` as `partial class` using `[ObservableProperty]`: flat observable properties for all 6 sensor values, units, and status labels; accepts `ISensorTickService` and `ITransitionOrchestrator` via constructor injection in `UfoDetector/ViewModels/DetectorViewModel.cs`
-- [ ] T029 [US1] Register `SensorTickService`, `TransitionOrchestrator` (stub), and `DetectorViewModel` in DI in `UfoDetector/MauiProgram.cs`
-- [ ] T030 [US1] Implement `RadarCanvasView` (`SKGLView` subclass, `EnableRenderLoop = true`): rotating sweep line, 3 concentric range rings, blip fade after sweep — all `SKPaint`/`SKPath` pre-allocated as fields, zero allocations inside `PaintSurface` per Constitution Principle IV in `UfoDetector/Controls/RadarCanvasView.cs`
-- [ ] T031 [US1] Implement `InfrasoundCanvasView` (`SKGLView` subclass, `EnableRenderLoop = true`): 20-bin animated bar graph, dashed alarm threshold line — all `SKPaint` pre-allocated, zero allocations inside `PaintSurface` per Constitution Principle IV in `UfoDetector/Controls/InfrasoundCanvasView.cs`
-- [ ] T032 [US1] Create `DetectorPage.xaml`: 6 sensor gauge panels (numeric label, unit label, status label, fill bar), `RadarCanvasView`, `InfrasoundCanvasView`; bind all sensor properties to `DetectorViewModel` in `UfoDetector/Views/DetectorPage.xaml`
-- [ ] T033 [US1] Wire `DetectorPage.xaml.cs`: constructor (resolve `DetectorViewModel` via DI, set `BindingContext`), `Loaded` handler calls `SensorTickService.StartAsync()` in `UfoDetector/Views/DetectorPage.xaml.cs`
-- [ ] T034 [US1] Configure `AppShell.xaml` to register and navigate to `DetectorPage` as the root route in `UfoDetector/AppShell.xaml`
+- [X] T027 [US1] Implement `SensorTickService`: ~100 ms `IDispatcherTimer` loop; apply ±3–5 % random drift per sensor; notify `DetectorViewModel` via callback; implement `StartAsync()`/`Stop()` from `ISensorTickService` in `UfoDetector/Services/SensorTickService.cs`
+- [X] T028 [US1] Implement `DetectorViewModel` as `partial class` using `[ObservableProperty]`: flat observable properties for all 6 sensor values, units, and status labels; accepts `ISensorTickService` and `ITransitionOrchestrator` via constructor injection in `UfoDetector/ViewModels/DetectorViewModel.cs`
+- [X] T029 [US1] Register `SensorTickService`, `TransitionOrchestrator` (stub), and `DetectorViewModel` in DI in `UfoDetector/MauiProgram.cs`
+- [X] T030 [US1] Implement `RadarCanvasView` (`SKGLView` subclass, `EnableRenderLoop = true`): rotating sweep line, 3 concentric range rings, blip fade after sweep — all `SKPaint`/`SKPath` pre-allocated as fields, zero allocations inside `PaintSurface` per Constitution Principle IV in `UfoDetector/Controls/RadarCanvasView.cs`
+- [X] T031 [US1] Implement `InfrasoundCanvasView` (`SKGLView` subclass, `EnableRenderLoop = true`): 20-bin animated bar graph, dashed alarm threshold line — all `SKPaint` pre-allocated, zero allocations inside `PaintSurface` per Constitution Principle IV in `UfoDetector/Controls/InfrasoundCanvasView.cs`
+- [X] T032 [US1] Create `DetectorPage.xaml`: 6 sensor gauge panels (numeric label, unit label, status label, fill bar), `RadarCanvasView`, `InfrasoundCanvasView`; bind all sensor properties to `DetectorViewModel` in `UfoDetector/Views/DetectorPage.xaml`
+- [X] T033 [US1] Wire `DetectorPage.xaml.cs`: constructor (resolve `DetectorViewModel` via DI, set `BindingContext`), `Loaded` handler calls `SensorTickService.StartAsync()` in `UfoDetector/Views/DetectorPage.xaml.cs`
+- [X] T034 [US1] Configure `AppShell.xaml` to register and navigate to `DetectorPage` as the root route in `UfoDetector/AppShell.xaml`
 
 **Checkpoint**: `dotnet test` passes (T025, T026 green). Launch app on emulator: all gauges animate, radar sweeps, infrasound bars move, all labels read "НОРМА" in green. Story 1 demonstrable independently.
 

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:UfoDetector.Controls"
+             x:Class="UfoDetector.Views.DetectorPage"
+             BackgroundColor="{StaticResource CrtBackground}"
+             Title="">
+
+    <ContentPage.Resources>
+        <!-- Gauge panel border style -->
+        <Style x:Key="PanelBorder" TargetType="Border">
+            <Setter Property="Stroke"          Value="#1A3A20" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Padding"         Value="6" />
+            <Setter Property="Margin"          Value="2" />
+            <Setter Property="BackgroundColor" Value="#060F08" />
+            <Setter Property="StrokeShape"     Value="RoundRectangle 4,4,4,4" />
+        </Style>
+
+        <!-- Sensor name label -->
+        <Style x:Key="GaugeName" TargetType="Label">
+            <Setter Property="FontFamily"   Value="ShareTechMono" />
+            <Setter Property="FontSize"     Value="9" />
+            <Setter Property="TextColor"    Value="#2A6640" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
+
+        <!-- Numeric value label -->
+        <Style x:Key="GaugeValue" TargetType="Label">
+            <Setter Property="FontFamily"   Value="ShareTechMono" />
+            <Setter Property="FontSize"     Value="18" />
+            <Setter Property="TextColor"    Value="{StaticResource PhosphorGreen}" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
+
+        <!-- Unit label -->
+        <Style x:Key="GaugeUnit" TargetType="Label">
+            <Setter Property="FontFamily"   Value="ShareTechMono" />
+            <Setter Property="FontSize"     Value="9" />
+            <Setter Property="TextColor"    Value="#7DFF9A" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
+
+        <!-- Status label (НОРМА / ПОВЫШЕН / …) -->
+        <Style x:Key="GaugeStatus" TargetType="Label">
+            <Setter Property="FontFamily"   Value="ShareTechMono" />
+            <Setter Property="FontSize"     Value="10" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="TextColor"    Value="{StaticResource PhosphorGreen}" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+        </Style>
+
+        <!-- Fill bar -->
+        <Style x:Key="GaugeBar" TargetType="ProgressBar">
+            <Setter Property="ProgressColor" Value="{StaticResource PhosphorGreen}" />
+            <Setter Property="HeightRequest" Value="4" />
+            <Setter Property="HorizontalOptions" Value="Fill" />
+        </Style>
+
+        <!-- Section header -->
+        <Style x:Key="SectionHeader" TargetType="Label">
+            <Setter Property="FontFamily"     Value="ShareTechMono" />
+            <Setter Property="FontSize"       Value="9" />
+            <Setter Property="TextColor"      Value="#2A6640" />
+            <Setter Property="Margin"         Value="4,4,4,0" />
+        </Style>
+    </ContentPage.Resources>
+
+    <!-- Root: header + body -->
+    <Grid RowDefinitions="Auto, *, Auto, Auto">
+
+        <!-- ── A: Header ──────────────────────────────────────────────────── -->
+        <Border Grid.Row="0" Style="{StaticResource PanelBorder}" Margin="2,2,2,0">
+            <Grid ColumnDefinitions="*, Auto">
+                <Label Text="АЯ-ДЕТЕКТОР"
+                       FontFamily="ShareTechMono" FontSize="14" FontAttributes="Bold"
+                       TextColor="{StaticResource PhosphorGreen}" VerticalOptions="Center" />
+                <Label Grid.Column="1"
+                       Text="СИСТЕМА МОНИТОРИНГА АНОМАЛИЙ"
+                       FontFamily="ShareTechMono" FontSize="9"
+                       TextColor="#2A6640" VerticalOptions="Center" />
+            </Grid>
+        </Border>
+
+        <!-- ── B + C: Radar left, Controls right ─────────────────────────── -->
+        <Grid Grid.Row="1" ColumnDefinitions="*, 220">
+
+            <!-- Left column: Radar + 4 sensors -->
+            <Grid ColumnDefinitions="*, *" RowDefinitions="*,Auto,Auto">
+
+                <!-- Radar (spans 2 columns) -->
+                <Border Grid.Row="0" Grid.ColumnSpan="2" Style="{StaticResource PanelBorder}">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <controls:RadarCanvasView Grid.Column="0"
+                            HeightRequest="260" WidthRequest="260"
+                            HorizontalOptions="Start" />
+                        <!-- Blip legend -->
+                        <StackLayout Grid.Column="1" Spacing="4" Padding="8,4" VerticalOptions="Center">
+                            <Label Text="РАДАРНЫЙ МОДУЛЬ" Style="{StaticResource SectionHeader}" />
+                            <StackLayout Orientation="Horizontal" Spacing="4">
+                                <BoxView Color="#39FF14" WidthRequest="8" HeightRequest="8" CornerRadius="4" VerticalOptions="Center"/>
+                                <Label Text="ЭМ" FontFamily="ShareTechMono" FontSize="9" TextColor="#39FF14" VerticalOptions="Center"/>
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Spacing="4">
+                                <BoxView Color="#FFB300" WidthRequest="8" HeightRequest="8" CornerRadius="4" VerticalOptions="Center"/>
+                                <Label Text="ИЗЛУЧЕНИЕ" FontFamily="ShareTechMono" FontSize="9" TextColor="#FFB300" VerticalOptions="Center"/>
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Spacing="4">
+                                <BoxView Color="#44AAFF" WidthRequest="8" HeightRequest="8" CornerRadius="4" VerticalOptions="Center"/>
+                                <Label Text="ИОНИЗАЦИЯ" FontFamily="ShareTechMono" FontSize="9" TextColor="#44AAFF" VerticalOptions="Center"/>
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Spacing="4">
+                                <BoxView Color="#FF6600" WidthRequest="8" HeightRequest="8" CornerRadius="4" VerticalOptions="Center"/>
+                                <Label Text="ТЕПЛОВОЙ" FontFamily="ShareTechMono" FontSize="9" TextColor="#FF6600" VerticalOptions="Center"/>
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Spacing="4">
+                                <BoxView Color="#00DDCC" WidthRequest="8" HeightRequest="8" CornerRadius="4" VerticalOptions="Center"/>
+                                <Label Text="ГЕОМАГН." FontFamily="ShareTechMono" FontSize="9" TextColor="#00DDCC" VerticalOptions="Center"/>
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" Spacing="4">
+                                <BoxView Color="#CC44FF" WidthRequest="8" HeightRequest="8" CornerRadius="4" VerticalOptions="Center"/>
+                                <Label Text="ХРОНО" FontFamily="ShareTechMono" FontSize="9" TextColor="#CC44FF" VerticalOptions="Center"/>
+                            </StackLayout>
+                        </StackLayout>
+                    </Grid>
+                </Border>
+
+                <!-- C1: Neutron gauge -->
+                <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource PanelBorder}">
+                    <StackLayout Spacing="2">
+                        <Label Text="НЕЙТР. ИЗЛ."    Style="{StaticResource GaugeName}" />
+                        <Label Text="{Binding NeutronValue, StringFormat='{0:F1}'}" Style="{StaticResource GaugeValue}" />
+                        <Label Text="{Binding NeutronUnit}"     Style="{StaticResource GaugeUnit}" />
+                        <ProgressBar Progress="{Binding NeutronNormalized}" Style="{StaticResource GaugeBar}" />
+                        <Label Text="НОРМА"           Style="{StaticResource GaugeStatus}" />
+                    </StackLayout>
+                </Border>
+
+                <!-- C2: Ionisation gauge -->
+                <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource PanelBorder}">
+                    <StackLayout Spacing="2">
+                        <Label Text="ИОНИЗАЦИЯ"       Style="{StaticResource GaugeName}" />
+                        <Label Text="{Binding IonisationValue, StringFormat='{0:F0}'}" Style="{StaticResource GaugeValue}" />
+                        <Label Text="{Binding IonisationUnit}" Style="{StaticResource GaugeUnit}" />
+                        <ProgressBar Progress="{Binding IonisationNormalized}" Style="{StaticResource GaugeBar}" />
+                        <Label Text="НОРМА"           Style="{StaticResource GaugeStatus}" />
+                    </StackLayout>
+                </Border>
+
+                <!-- C3: Geomagnetic gauge -->
+                <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource PanelBorder}">
+                    <StackLayout Spacing="2">
+                        <Label Text="ГЕОМАГН. ПОЛЕ"   Style="{StaticResource GaugeName}" />
+                        <Label Text="{Binding GeomagneticValue, StringFormat='{0:F0}'}" Style="{StaticResource GaugeValue}" />
+                        <Label Text="{Binding GeomagneticUnit}" Style="{StaticResource GaugeUnit}" />
+                        <ProgressBar Progress="{Binding GeomagneticNormalized}" Style="{StaticResource GaugeBar}" />
+                        <Label Text="НОРМА"           Style="{StaticResource GaugeStatus}" />
+                    </StackLayout>
+                </Border>
+
+                <!-- C4: Thermal gauge -->
+                <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource PanelBorder}">
+                    <StackLayout Spacing="2">
+                        <Label Text="ТЕПЛ. АНОМ."     Style="{StaticResource GaugeName}" />
+                        <Label Text="{Binding ThermalValue, StringFormat='{0:F2}'}" Style="{StaticResource GaugeValue}" />
+                        <Label Text="{Binding ThermalUnit}"    Style="{StaticResource GaugeUnit}" />
+                        <ProgressBar Progress="{Binding ThermalNormalized}" Style="{StaticResource GaugeBar}" />
+                        <Label Text="НОРМА"           Style="{StaticResource GaugeStatus}" />
+                    </StackLayout>
+                </Border>
+
+            </Grid>
+
+            <!-- Right column: Controls placeholder (Phase 4) -->
+            <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
+                <StackLayout Spacing="8" Padding="4">
+                    <Label Text="РЕЖИМ ПОИСКА" Style="{StaticResource SectionHeader}" />
+                    <Label Text="(Фаза 4)" FontFamily="ShareTechMono" FontSize="10" TextColor="#2A6640" HorizontalOptions="Center" />
+                </StackLayout>
+            </Border>
+
+        </Grid>
+
+        <!-- ── D: Chrono anomaly row ──────────────────────────────────────── -->
+        <Border Grid.Row="2" Style="{StaticResource PanelBorder}">
+            <Grid ColumnDefinitions="Auto, *, Auto, Auto" RowDefinitions="Auto">
+                <Label Text="ХРОНОАНОМАЛИЯ"
+                       FontFamily="ShareTechMono" FontSize="10" TextColor="#2A6640"
+                       VerticalOptions="Center" Margin="0,0,12,0" />
+                <Label Grid.Column="1"
+                       Text="{Binding ChronoValue, StringFormat='Δt {0:F4}с'}"
+                       Style="{StaticResource GaugeValue}" FontSize="14"
+                       VerticalOptions="Center" />
+                <ProgressBar Grid.Column="2"
+                             Progress="{Binding ChronoNormalized}"
+                             ProgressColor="{StaticResource PhosphorGreen}"
+                             HeightRequest="4" WidthRequest="80"
+                             VerticalOptions="Center" Margin="8,0" />
+                <Label Grid.Column="3"
+                       Text="НОРМА"
+                       Style="{StaticResource GaugeStatus}" FontSize="10"
+                       VerticalOptions="Center" />
+            </Grid>
+        </Border>
+
+        <!-- ── E: Infrasound spectrum ─────────────────────────────────────── -->
+        <Border Grid.Row="3" Style="{StaticResource PanelBorder}">
+            <StackLayout Spacing="4">
+                <Label Text="ИНФРАЗВУК  0 — 20 Гц" Style="{StaticResource SectionHeader}" />
+                <controls:InfrasoundCanvasView
+                    Bands="{Binding InfrasoundBands}"
+                    HeightRequest="120"
+                    HorizontalOptions="Fill" />
+            </StackLayout>
+        </Border>
+
+    </Grid>
+</ContentPage>
