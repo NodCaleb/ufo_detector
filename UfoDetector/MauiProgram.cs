@@ -31,7 +31,7 @@ public static class MauiProgram
 			_ => Application.Current!.Dispatcher.CreateTimer());
 		builder.Services.AddSingleton<ISensorTickService, SensorTickService>();
 		builder.Services.AddSingleton<ITransitionOrchestrator, TransitionOrchestrator>();
-		builder.Services.AddSingleton<IAnomalyEvaluator, NullAnomalyEvaluator>();
+		builder.Services.AddSingleton<IAnomalyEvaluator, AnomalyEvaluator>();
 		builder.Services.AddSingleton<IPreferences>(_ => Preferences.Default);
 
 		// ViewModel + Page (singleton so DI resolves them once)

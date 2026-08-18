@@ -19,6 +19,14 @@ public interface ISensorTickService
     SensorStatus ChronoStatus     { get; }
     double[] InfrasoundBands { get; }
 
+    // Phase 5: anomaly state exposed to ViewModel
+    Anomaly? ActiveAnomaly { get; }
+    TransitionPhase Phase  { get; }
+    double LerpProgress    { get; }
+
     Task StartAsync();
     void Stop();
+
+    /// <summary>Sync the tick service's DetectorState with the current control values.</summary>
+    void UpdateControls(DetectorMode mode, int sensitivity, int noiseSuppression);
 }

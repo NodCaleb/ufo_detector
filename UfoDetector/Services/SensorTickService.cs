@@ -6,7 +6,11 @@ namespace UfoDetector.Services;
 public class SensorTickService : ISensorTickService
 {
     private readonly IDispatcherTimer _timer;
+    private readonly IAnomalyEvaluator _evaluator;
+    private readonly ITransitionOrchestrator _orchestrator;
     private readonly Random _rng = new();
+
+    private readonly DetectorState _state = new();
 
     private double _neutronValue    = SensorBaseline.Neutron.BaselineValue;
     private double _ionisationValue = SensorBaseline.Ionisation.BaselineValue;
@@ -31,13 +35,29 @@ public class SensorTickService : ISensorTickService
     public SensorStatus ChronoStatus      => SensorBaseline.Chrono.Classify(_chronoValue);
     public double[] InfrasoundBands => _infrasoundBands;
 
-    public SensorTickService(IDispatcherTimer timer)
+    public Anomaly? ActiveAnomaly => _state.ActiveAnomaly;
+    public TransitionPhase Phase  => _state.Phase;
+    public double LerpProgress    => _state.LerpProgress;
+
+    public SensorTickService(
+        IDispatcherTimer timer,
+        IAnomalyEvaluator evaluator,
+        ITransitionOrchestrator orchestrator)
     {
-        _timer = timer;
-        _timer.Interval = TickInterval;
+        _timer       = timer;
+        _evaluator   = evaluator;
+        _orchestrator = orchestrator;
+        _timer.Interval    = TickInterval;
         _timer.IsRepeating = true;
         _timer.Tick += (_, _) => Tick();
         Array.Fill(_infrasoundBands, 0.05);
+    }
+
+    public void UpdateControls(DetectorMode mode, int sensitivity, int noiseSuppression)
+    {
+        _state.Mode             = mode;
+        _state.Sensitivity      = sensitivity;
+        _state.NoiseSuppression = noiseSuppression;
     }
 
     public Task StartAsync() { _timer.Start(); return Task.CompletedTask; }
@@ -45,6 +65,9 @@ public class SensorTickService : ISensorTickService
 
     internal void Tick()
     {
+        _state.PendingAnomaly = _evaluator.Evaluate(_state);
+        _orchestrator.Step(_state, TickInterval.TotalSeconds);
+
         _neutronValue    = Drift(_neutronValue,    SensorBaseline.Neutron);
         _ionisationValue = Drift(_ionisationValue, SensorBaseline.Ionisation);
         _geomagneticValue = Drift(_geomagneticValue, SensorBaseline.Geomagnetic);
@@ -76,3 +99,4 @@ public class SensorTickService : ISensorTickService
             _infrasoundBands[i] = Math.Clamp(0.05 + (_rng.NextDouble() - 0.5) * 0.01, 0.01, 0.10);
     }
 }
+

@@ -129,16 +129,16 @@ description: "Task list for UFO Anomaly Detector App implementation"
 
 ### Tests for User Story 3 (Write FIRST — must FAIL before implementation)
 
-- [ ] T040 [P] [US3] Write `AnomalyEvaluatorTests`: assert each of the 5 anomalies returns its correct `Anomaly` record when conditions match; assert `null` returned for no-match; assert boundary values are inclusive (sensitivity = 60 % triggers Anomaly 1; sensitivity = 59 % does not); assert no two anomalies match simultaneously for any (Mode, Sensitivity, NoiseSuppression) triple in `UfoDetector.Tests/Services/AnomalyEvaluatorTests.cs`
-- [ ] T041 [P] [US3] Write `TransitionOrchestratorTests`: assert `LerpProgress` reaches 1.0 after `2500 ms / tickInterval` steps (appear); assert `LerpProgress` reaches 0.0 after `1500 ms / tickInterval` steps (fade); assert `PendingAnomaly` is not promoted to `ActiveAnomaly` until `LerpProgress ≤ 0.02` (FR-011) in `UfoDetector.Tests/Services/TransitionOrchestratorTests.cs`
+- [X] T040 [P] [US3] Write `AnomalyEvaluatorTests`: assert each of the 5 anomalies returns its correct `Anomaly` record when conditions match; assert `null` returned for no-match; assert boundary values are inclusive (sensitivity = 60 % triggers Anomaly 1; sensitivity = 59 % does not); assert no two anomalies match simultaneously for any (Mode, Sensitivity, NoiseSuppression) triple in `UfoDetector.Tests/Services/AnomalyEvaluatorTests.cs`
+- [X] T041 [P] [US3] Write `TransitionOrchestratorTests`: assert `LerpProgress` reaches 1.0 after `2500 ms / tickInterval` steps (appear); assert `LerpProgress` reaches 0.0 after `1500 ms / tickInterval` steps (fade); assert `PendingAnomaly` is not promoted to `ActiveAnomaly` until `LerpProgress ≤ 0.02` (FR-011) in `UfoDetector.Tests/Services/TransitionOrchestratorTests.cs`
 
 ### Implementation for User Story 3
 
-- [ ] T042 [US3] Implement `AnomalyEvaluator.Evaluate(DetectorState state)`: iterate `AnomalyDefinitions.All`; return first `Anomaly` whose `Trigger` conditions are all satisfied (inclusive boundaries); return `null` if none match in `UfoDetector/Services/AnomalyEvaluator.cs`
-- [ ] T043 [US3] Implement `TransitionOrchestrator.Step(DetectorState state, double elapsedSeconds)`: state machine `Idle→Appearing→Active→Fading`; lerp formula `progress += elapsedSeconds / duration`; sequential gate `LerpProgress ≤ 0.02` before promoting `PendingAnomaly`; clamp progress to [0.0, 1.0] in `UfoDetector/Services/TransitionOrchestrator.cs`
-- [ ] T044 [US3] Integrate anomaly evaluation into `SensorTickService`: on each tick call `IAnomalyEvaluator.Evaluate()`; compare result to `DetectorState.ActiveAnomaly`; update `Phase` accordingly; call `ITransitionOrchestrator.Step()` with elapsed time in `UfoDetector/Services/SensorTickService.cs`
-- [ ] T045 [US3] Add `[ObservableProperty] Anomaly? ActiveAnomaly`, `[ObservableProperty] TransitionPhase Phase`, and `[ObservableProperty] double LerpProgress` to `DetectorViewModel`; propagate state changes from tick service on main thread in `UfoDetector/ViewModels/DetectorViewModel.cs`
-- [ ] T046 [US3] Register `AnomalyEvaluator` (replacing stub) in DI in `UfoDetector/MauiProgram.cs`
+- [X] T042 [US3] Implement `AnomalyEvaluator.Evaluate(DetectorState state)`: iterate `AnomalyDefinitions.All`; return first `Anomaly` whose `Trigger` conditions are all satisfied (inclusive boundaries); return `null` if none match in `UfoDetector/Services/AnomalyEvaluator.cs`
+- [X] T043 [US3] Implement `TransitionOrchestrator.Step(DetectorState state, double elapsedSeconds)`: state machine `Idle→Appearing→Active→Fading`; lerp formula `progress += elapsedSeconds / duration`; sequential gate `LerpProgress ≤ 0.02` before promoting `PendingAnomaly`; clamp progress to [0.0, 1.0] in `UfoDetector/Services/TransitionOrchestrator.cs`
+- [X] T044 [US3] Integrate anomaly evaluation into `SensorTickService`: on each tick call `IAnomalyEvaluator.Evaluate()`; compare result to `DetectorState.ActiveAnomaly`; update `Phase` accordingly; call `ITransitionOrchestrator.Step()` with elapsed time in `UfoDetector/Services/SensorTickService.cs`
+- [X] T045 [US3] Add `[ObservableProperty] Anomaly? ActiveAnomaly`, `[ObservableProperty] TransitionPhase Phase`, and `[ObservableProperty] double LerpProgress` to `DetectorViewModel`; propagate state changes from tick service on main thread in `UfoDetector/ViewModels/DetectorViewModel.cs`
+- [X] T046 [US3] Register `AnomalyEvaluator` (replacing stub) in DI in `UfoDetector/MauiProgram.cs`
 
 **Checkpoint**: `dotnet test` passes (T040, T041 green). On device: Anomaly 1 combination triggers visible state change within 3 s; exiting range fades within 1.5 s; rapid anomaly switching obeys FR-011 sequential constraint.
 

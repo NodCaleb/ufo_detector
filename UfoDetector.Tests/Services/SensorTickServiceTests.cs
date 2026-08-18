@@ -10,7 +10,10 @@ public class SensorTickServiceTests
     private static SensorTickService CreateService(out Mock<IDispatcherTimer> timerMock)
     {
         timerMock = new Mock<IDispatcherTimer>();
-        return new SensorTickService(timerMock.Object);
+        var evalMock = new Mock<IAnomalyEvaluator>();
+        evalMock.Setup(e => e.Evaluate(It.IsAny<DetectorState>())).Returns((Anomaly?)null);
+        var orchMock = new Mock<ITransitionOrchestrator>();
+        return new SensorTickService(timerMock.Object, evalMock.Object, orchMock.Object);
     }
 
     [Fact]
@@ -21,7 +24,9 @@ public class SensorTickServiceTests
         timerMock.SetupSet(t => t.Interval = It.IsAny<TimeSpan>())
                  .Callback<TimeSpan>(ts => captured = ts);
 
-        _ = new SensorTickService(timerMock.Object);
+        var evalMock = new Mock<IAnomalyEvaluator>();
+        evalMock.Setup(e => e.Evaluate(It.IsAny<DetectorState>())).Returns((Anomaly?)null);
+        _ = new SensorTickService(timerMock.Object, evalMock.Object, new Mock<ITransitionOrchestrator>().Object);
 
         Assert.Equal(SensorTickService.TickInterval, captured);
         Assert.Equal(TimeSpan.FromMilliseconds(100), SensorTickService.TickInterval);

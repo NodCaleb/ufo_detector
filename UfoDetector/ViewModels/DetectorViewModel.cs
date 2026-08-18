@@ -11,7 +11,6 @@ public partial class DetectorViewModel : ObservableObject
 {
     private readonly ISensorTickService _tickService;
     private readonly ITransitionOrchestrator _orchestrator;
-    private readonly IAnomalyEvaluator _evaluator;
     private readonly IPreferences _preferences;
 
     // Suppresses preference writes triggered by the constructor restore
@@ -60,6 +59,12 @@ public partial class DetectorViewModel : ObservableObject
     [ObservableProperty] public partial int Sensitivity      { get; set; }
     [ObservableProperty] public partial int NoiseSuppression { get; set; }
 
+    // ── Phase 5: anomaly transition state ─────────────────────────────────────
+
+    [ObservableProperty] public partial Anomaly? ActiveAnomaly { get; set; }
+    [ObservableProperty] public partial TransitionPhase Phase  { get; set; }
+    [ObservableProperty] public partial double LerpProgress    { get; set; }
+
     public bool   IsActiveMode => Mode == DetectorMode.Active;
     public string ModeLabel    => Mode == DetectorMode.Active ? "АКТИВ" : "ПАССИВ";
 
@@ -84,12 +89,10 @@ public partial class DetectorViewModel : ObservableObject
     public DetectorViewModel(
         ISensorTickService    tickService,
         ITransitionOrchestrator orchestrator,
-        IAnomalyEvaluator     evaluator,
         IPreferences          preferences)
     {
         _tickService  = tickService;
         _orchestrator = orchestrator;
-        _evaluator    = evaluator;
         _preferences  = preferences;
 
         // Sensor baselines
@@ -115,6 +118,7 @@ public partial class DetectorViewModel : ObservableObject
 
         _isInitializing = false;
 
+        _tickService.UpdateControls(Mode, Sensitivity, NoiseSuppression);
         _tickService.Ticked += OnTicked;
     }
 
@@ -124,24 +128,27 @@ public partial class DetectorViewModel : ObservableObject
     private void ToggleMode()
     {
         Mode = Mode == DetectorMode.Active ? DetectorMode.Passive : DetectorMode.Active;
-        _evaluator.Evaluate(new DetectorState
-        {
-            Mode             = Mode,
-            Sensitivity      = Sensitivity,
-            NoiseSuppression = NoiseSuppression,
-        });
+        _tickService.UpdateControls(Mode, Sensitivity, NoiseSuppression);
     }
 
     // ── Preference persistence hooks ─────────────────────────────────────────
 
     partial void OnSensitivityChanged(int value)
     {
-        if (!_isInitializing) _preferences.Set(PrefKeySensitivity, value, null);
+        if (!_isInitializing)
+        {
+            _preferences.Set(PrefKeySensitivity, value, null);
+            _tickService.UpdateControls(Mode, value, NoiseSuppression);
+        }
     }
 
     partial void OnNoiseSuppressionChanged(int value)
     {
-        if (!_isInitializing) _preferences.Set(PrefKeyNoiseSuppression, value, null);
+        if (!_isInitializing)
+        {
+            _preferences.Set(PrefKeyNoiseSuppression, value, null);
+            _tickService.UpdateControls(Mode, Sensitivity, value);
+        }
     }
 
     // ── Tick handler ──────────────────────────────────────────────────────────
@@ -165,5 +172,9 @@ public partial class DetectorViewModel : ObservableObject
         var copy = new double[20];
         Array.Copy(bands, copy, 20);
         InfrasoundBands = copy;
+
+        ActiveAnomaly = _tickService.ActiveAnomaly;
+        Phase         = _tickService.Phase;
+        LerpProgress  = _tickService.LerpProgress;
     }
 }

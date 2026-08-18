@@ -12,7 +12,6 @@ public class DetectorViewModelTests
     private static DetectorViewModel CreateViewModel(
         out Mock<ISensorTickService> tickMock,
         out Mock<ITransitionOrchestrator> orchMock,
-        out Mock<IAnomalyEvaluator> evalMock,
         out Mock<IPreferences> prefsMock)
     {
         tickMock = new Mock<ISensorTickService>();
@@ -30,14 +29,13 @@ public class DetectorViewModelTests
         tickMock.Setup(t => t.InfrasoundBands).Returns(new double[20]);
 
         orchMock  = new Mock<ITransitionOrchestrator>();
-        evalMock  = new Mock<IAnomalyEvaluator>();
         prefsMock = new Mock<IPreferences>();
         // Return the defaultValue argument so Get<T> behaves like "no saved value"
         prefsMock
             .Setup(p => p.Get(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string?>()))
             .Returns<string, int, string?>((_, def, _) => def);
 
-        return new DetectorViewModel(tickMock.Object, orchMock.Object, evalMock.Object, prefsMock.Object);
+        return new DetectorViewModel(tickMock.Object, orchMock.Object, prefsMock.Object);
     }
 
     // ── Existing Phase 3 tests ────────────────────────────────────────────────
@@ -45,7 +43,7 @@ public class DetectorViewModelTests
     [Fact]
     public void Initial_SensorValues_Match_Baselines()
     {
-        var vm = CreateViewModel(out _, out _, out _, out _);
+        var vm = CreateViewModel(out _, out _, out _);
 
         Assert.Equal(SensorBaseline.Neutron.BaselineValue,     vm.NeutronValue);
         Assert.Equal(SensorBaseline.Ionisation.BaselineValue,  vm.IonisationValue);
@@ -57,7 +55,7 @@ public class DetectorViewModelTests
     [Fact]
     public void Initial_Statuses_Are_All_Normal()
     {
-        var vm = CreateViewModel(out _, out _, out _, out _);
+        var vm = CreateViewModel(out _, out _, out _);
 
         Assert.Equal(SensorStatus.Normal, vm.NeutronStatus);
         Assert.Equal(SensorStatus.Normal, vm.IonisationStatus);
@@ -69,7 +67,7 @@ public class DetectorViewModelTests
     [Fact]
     public void InfrasoundBands_Initialised_To_20_Elements()
     {
-        var vm = CreateViewModel(out _, out _, out _, out _);
+        var vm = CreateViewModel(out _, out _, out _);
 
         Assert.NotNull(vm.InfrasoundBands);
         Assert.Equal(20, vm.InfrasoundBands.Length);
@@ -78,7 +76,7 @@ public class DetectorViewModelTests
     [Fact]
     public void When_Ticked_Values_Refresh_From_Service()
     {
-        var vm = CreateViewModel(out var tickMock, out _, out _, out _);
+        var vm = CreateViewModel(out var tickMock, out _, out _);
 
         const double newNeutron = 4.5;
         tickMock.Setup(t => t.NeutronValue).Returns(newNeutron);
@@ -95,14 +93,14 @@ public class DetectorViewModelTests
     [Fact]
     public void Mode_Default_Is_Passive()
     {
-        var vm = CreateViewModel(out _, out _, out _, out _);
+        var vm = CreateViewModel(out _, out _, out _);
         Assert.Equal(DetectorMode.Passive, vm.Mode);
     }
 
     [Fact]
     public void ToggleModeCommand_Switches_Passive_To_Active()
     {
-        var vm = CreateViewModel(out _, out _, out _, out _);
+        var vm = CreateViewModel(out _, out _, out _);
         vm.ToggleModeCommand.Execute(null);
         Assert.Equal(DetectorMode.Active, vm.Mode);
     }
@@ -110,7 +108,7 @@ public class DetectorViewModelTests
     [Fact]
     public void ToggleModeCommand_Switches_Active_Back_To_Passive()
     {
-        var vm = CreateViewModel(out _, out _, out _, out _);
+        var vm = CreateViewModel(out _, out _, out _);
         vm.ToggleModeCommand.Execute(null); // → Active
         vm.ToggleModeCommand.Execute(null); // → Passive
         Assert.Equal(DetectorMode.Passive, vm.Mode);
@@ -119,14 +117,14 @@ public class DetectorViewModelTests
     [Fact]
     public void Sensitivity_Default_Is_50()
     {
-        var vm = CreateViewModel(out _, out _, out _, out _);
+        var vm = CreateViewModel(out _, out _, out _);
         Assert.Equal(50, vm.Sensitivity);
     }
 
     [Fact]
     public void NoiseSuppression_Default_Is_50()
     {
-        var vm = CreateViewModel(out _, out _, out _, out _);
+        var vm = CreateViewModel(out _, out _, out _);
         Assert.Equal(50, vm.NoiseSuppression);
     }
 
@@ -136,7 +134,7 @@ public class DetectorViewModelTests
     [InlineData(100)]
     public void Sensitivity_Accepts_Boundary_Values(int value)
     {
-        var vm = CreateViewModel(out _, out _, out _, out _);
+        var vm = CreateViewModel(out _, out _, out _);
         vm.Sensitivity = value;
         Assert.Equal(value, vm.Sensitivity);
     }
@@ -147,7 +145,7 @@ public class DetectorViewModelTests
     [InlineData(100)]
     public void NoiseSuppression_Accepts_Boundary_Values(int value)
     {
-        var vm = CreateViewModel(out _, out _, out _, out _);
+        var vm = CreateViewModel(out _, out _, out _);
         vm.NoiseSuppression = value;
         Assert.Equal(value, vm.NoiseSuppression);
     }
@@ -155,7 +153,7 @@ public class DetectorViewModelTests
     [Fact]
     public void Sensitivity_Set_Saves_To_Preferences()
     {
-        var vm = CreateViewModel(out _, out _, out _, out var prefsMock);
+        var vm = CreateViewModel(out _, out _, out var prefsMock);
         vm.Sensitivity = 75;
         prefsMock.Verify(p => p.Set("Sensitivity", 75, null), Times.Once);
     }
@@ -163,7 +161,7 @@ public class DetectorViewModelTests
     [Fact]
     public void NoiseSuppression_Set_Saves_To_Preferences()
     {
-        var vm = CreateViewModel(out _, out _, out _, out var prefsMock);
+        var vm = CreateViewModel(out _, out _, out var prefsMock);
         vm.NoiseSuppression = 15;
         prefsMock.Verify(p => p.Set("NoiseSuppression", 15, null), Times.Once);
     }
@@ -181,7 +179,6 @@ public class DetectorViewModelTests
         var vm = new DetectorViewModel(
             tickMock.Object,
             new Mock<ITransitionOrchestrator>().Object,
-            new Mock<IAnomalyEvaluator>().Object,
             prefsMock.Object);
 
         Assert.Equal(75, vm.Sensitivity);
@@ -200,7 +197,6 @@ public class DetectorViewModelTests
         var vm = new DetectorViewModel(
             tickMock.Object,
             new Mock<ITransitionOrchestrator>().Object,
-            new Mock<IAnomalyEvaluator>().Object,
             prefsMock.Object);
 
         Assert.Equal(15, vm.NoiseSuppression);
