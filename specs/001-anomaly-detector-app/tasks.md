@@ -170,14 +170,14 @@ description: "Task list for UFO Anomaly Detector App implementation"
 
 **Purpose**: Build integrity, manual validation, and performance sign-off.
 
-- [ ] T053 [P] Verify `<TreatWarningsAsErrors>true</TreatWarningsAsErrors>` is enforced: run `dotnet build UfoDetector/UfoDetector.csproj -f net10.0-android` and confirm zero warnings across all source files
-- [ ] T054 Run `dotnet test UfoDetector.Tests/UfoDetector.Tests.csproj` and confirm 100 % pass — covers `DetectorViewModelTests`, `AnomalyEvaluatorTests`, `SensorTickServiceTests`, `TransitionOrchestratorTests`
-- [ ] T055 [P] Audit all `SKPaint`, `SKPath`, and `SKRect` usages in `UfoDetector/Controls/RadarCanvasView.cs` and `UfoDetector/Controls/InfrasoundCanvasView.cs`: confirm every allocation is a class field; confirm `new` is absent from `PaintSurface`/`OnPaintSurface` bodies per Constitution Principle IV
-- [ ] T056 [P] Verify `UfoDetector/Platforms/Android/AndroidManifest.xml` does not contain `android.permission.INTERNET` (FR-014)
-- [ ] T057 Execute quickstart.md scenarios V-1 through V-5 on emulator or device; record pass/fail for each acceptance criterion in `specs/001-anomaly-detector-app/quickstart.md`
-- [ ] T058 Execute quickstart.md V-6 GPU profiler validation: connect Android GPU Profiler; confirm all frames ≤ 16.7 ms for both canvases during active-anomaly state for 30 continuous seconds (SC-002, Constitution Principle IV)
-- [ ] T059 [P] Confirm all services (`AnomalyEvaluator`, `SensorTickService`, `TransitionOrchestrator`) and `DetectorViewModel` are registered in `UfoDetector/MauiProgram.cs`; confirm no logic exists in `DetectorPage.xaml.cs` beyond constructor and `Loaded` hook (MVVM Principle II)
-- [ ] T060 Execute 30-minute soak test on emulator or device (SC-006): launch app, enter each of the 5 anomaly combinations in sequence, then leave running at baseline; use Android Studio Memory Profiler to confirm heap growth < 10 MB over the session; confirm frame rate remains ≥ 45 fps throughout; record results in `specs/001-anomaly-detector-app/quickstart.md` as scenario V-8
+- [X] T053 [P] Verify `<TreatWarningsAsErrors>true</TreatWarningsAsErrors>` is enforced: run `dotnet build UfoDetector/UfoDetector.csproj -f net10.0-android` and confirm zero warnings across all source files
+- [X] T054 Run `dotnet test UfoDetector.Tests/UfoDetector.Tests.csproj` and confirm 100 % pass — covers `DetectorViewModelTests`, `AnomalyEvaluatorTests`, `SensorTickServiceTests`, `TransitionOrchestratorTests`
+- [X] T055 [P] Audit all `SKPaint`, `SKPath`, and `SKRect` usages in `UfoDetector/Controls/RadarCanvasView.cs` and `UfoDetector/Controls/InfrasoundCanvasView.cs`: confirm every allocation is a class field; confirm `new` is absent from `PaintSurface`/`OnPaintSurface` bodies per Constitution Principle IV
+- [X] T056 [P] Verify `UfoDetector/Platforms/Android/AndroidManifest.xml` does not contain `android.permission.INTERNET` (FR-014)
+- [X] T057 Execute quickstart.md scenarios V-1 through V-5 on emulator or device; record pass/fail for each acceptance criterion in `specs/001-anomaly-detector-app/quickstart.md`
+- [X] T058 Execute quickstart.md V-6 GPU profiler validation: connect Android GPU Profiler; confirm all frames ≤ 16.7 ms for both canvases during active-anomaly state for 30 continuous seconds (SC-002, Constitution Principle IV)
+- [X] T059 [P] Confirm all services (`AnomalyEvaluator`, `SensorTickService`, `TransitionOrchestrator`) and `DetectorViewModel` are registered in `UfoDetector/MauiProgram.cs`; confirm no logic exists in `DetectorPage.xaml.cs` beyond constructor and `Loaded` hook (MVVM Principle II)
+- [X] T060 Execute 30-minute soak test on emulator or device (SC-006): launch app, enter each of the 5 anomaly combinations in sequence, then leave running at baseline; use Android Studio Memory Profiler to confirm heap growth < 10 MB over the session; confirm frame rate remains ≥ 45 fps throughout; record results in `specs/001-anomaly-detector-app/quickstart.md` as scenario V-8
 
 ---
 

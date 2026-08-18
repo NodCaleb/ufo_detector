@@ -203,3 +203,58 @@ For each anomaly verify:
 | Anomaly does not trigger at exact boundary | Off-by-one in range check | Use `>=` and `<=` (inclusive); see [contracts/anomaly-definitions.md](contracts/anomaly-definitions.md) |
 | Second anomaly appears before first fully fades | Sequential gate not enforced | Check `LerpProgress ≤ 0.02` guard in `TransitionOrchestrator` (FR-011) |
 | App rotates to landscape | Portrait lock not applied | Confirm `[Activity(ScreenOrientation = ScreenOrientation.Portrait)]` on `MainActivity` |
+
+---
+
+## Validation Results Log
+
+*Fill in during device/emulator testing. Requires Android emulator or physical device.*
+
+### V-1 through V-5 Results (T057)
+
+| Scenario | Criterion | Result | Notes |
+|----------|-----------|--------|-------|
+| V-1 | 6 sensor panels visible | ⬜ PENDING | Run on device |
+| V-1 | All gauges drift ±3–5 % every 1–2 s | ⬜ PENDING | |
+| V-1 | All gauges show green "НОРМА" | ⬜ PENDING | |
+| V-1 | Radar sweep rotates continuously | ⬜ PENDING | |
+| V-1 | Infrasound bar-graph animates each frame | ⬜ PENDING | |
+| V-2 | Mode toggle АКТИВ ↔ ПАССИВ with LED update | ⬜ PENDING | |
+| V-2 | Sensitivity slider shows exact value | ⬜ PENDING | |
+| V-2 | Noise-suppression slider shows exact value | ⬜ PENDING | |
+| V-2 | Values persist after slider release (no snap-back) | ⬜ PENDING | |
+| V-3 | Anomaly 1 activates within 3 s | ⬜ PENDING | |
+| V-3 | Correct blip type (EM), correct drift | ⬜ PENDING | |
+| V-3 | Geomagnetic gauge rises to ~55 нТл, АНОМАЛИЯ label | ⬜ PENDING | |
+| V-3 | Infrasound low hump at 2–5 Hz | ⬜ PENDING | |
+| V-3 | Fade completes within 1.5 s after controls exit range | ⬜ PENDING | |
+| V-4 | All 5 anomalies activate within 3 s | ⬜ PENDING | |
+| V-4 | Each blip type/count matches contract | ⬜ PENDING | |
+| V-4 | Key sensor values within ±5 % of target | ⬜ PENDING | |
+| V-4 | Status label/colour matches contract exactly | ⬜ PENDING | |
+| V-4 | FR-011 sequential transition respected | ⬜ PENDING | |
+| V-5 | Lower boundary (sensitivity=60, noise=15, ПАССИВ) → Anomaly 1 | ⬜ PENDING | |
+| V-5 | Upper boundary (sensitivity=70, noise=25, ПАССИВ) → Anomaly 1 | ⬜ PENDING | |
+| V-5 | Just outside lower (sensitivity=59) → no anomaly | ⬜ PENDING | |
+| V-5 | Just outside upper (sensitivity=71) → no anomaly | ⬜ PENDING | |
+| V-5 | Rapid mode toggle (×10) → no crash | ⬜ PENDING | |
+| V-5 | Simultaneous slider drag → independent, no crash | ⬜ PENDING | |
+
+### V-6 GPU Profiler Results (T058)
+
+*Run Android Studio GPU Profiler or Perfetto during active-anomaly state.*
+
+| Criterion | Result | Notes |
+|-----------|--------|-------|
+| All frames ≤ 16.7 ms (both canvases) for 30 s | ⬜ PENDING | |
+| No sustained frame-time spikes visible in profiler | ⬜ PENDING | |
+
+### V-8 30-Minute Soak Test Results (T060)
+
+*Run on emulator or device. Use Android Studio Memory Profiler.*
+
+| Criterion | Result | Notes |
+|-----------|--------|-------|
+| No crash during 30-minute session | ⬜ PENDING | |
+| Heap growth < 10 MB over session | ⬜ PENDING | |
+| Frame rate ≥ 45 fps throughout | ⬜ PENDING | |
