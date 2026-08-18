@@ -65,6 +65,11 @@ public partial class DetectorViewModel : ObservableObject
     [ObservableProperty] public partial TransitionPhase Phase  { get; set; }
     [ObservableProperty] public partial double LerpProgress    { get; set; }
 
+    // ── Phase 6: narrative display ────────────────────────────────────────────
+
+    [ObservableProperty] public partial string  Narrative     { get; set; } = string.Empty;
+    [ObservableProperty] public partial bool    ShowNarrative { get; set; }
+
     public bool   IsActiveMode => Mode == DetectorMode.Active;
     public string ModeLabel    => Mode == DetectorMode.Active ? "АКТИВ" : "ПАССИВ";
 
@@ -176,5 +181,9 @@ public partial class DetectorViewModel : ObservableObject
         ActiveAnomaly = _tickService.ActiveAnomaly;
         Phase         = _tickService.Phase;
         LerpProgress  = _tickService.LerpProgress;
+
+        bool visible = Phase is TransitionPhase.Appearing or TransitionPhase.Active;
+        ShowNarrative = visible;
+        Narrative     = visible ? (ActiveAnomaly?.Narrative ?? string.Empty) : string.Empty;
     }
 }

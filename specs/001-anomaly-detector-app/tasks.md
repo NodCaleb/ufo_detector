@@ -152,15 +152,15 @@ description: "Task list for UFO Anomaly Detector App implementation"
 
 ### Tests for User Story 4 (Write FIRST — must FAIL before implementation)
 
-- [ ] T047 [P] [US4] Extend `AnomalyEvaluatorTests`: for each of the 5 anomalies assert the returned `Anomaly` record's `SensorTargets` and `RadarBlips` match `contracts/anomaly-definitions.md` exactly (values, units, blip types, counts, and per-channel `SensorStatus` fields) in `UfoDetector.Tests/Services/AnomalyEvaluatorTests.cs`
+- [X] T047 [P] [US4] Extend `AnomalyEvaluatorTests`: for each of the 5 anomalies assert the returned `Anomaly` record's `SensorTargets` and `RadarBlips` match `contracts/anomaly-definitions.md` exactly (values, units, blip types, counts, and per-channel `SensorStatus` fields) in `UfoDetector.Tests/Services/AnomalyEvaluatorTests.cs`
 
 ### Implementation for User Story 4
 
-- [ ] T048 [US4] Update `SensorTickService`: when `Phase` is `Appearing` or `Active`, lerp each sensor channel from `SensorBaseline` toward `SensorTargetValues` using `LerpProgress`; derive `SensorStatus` from `SensorBaseline` thresholds when `LerpProgress < 0.5`, and use `SensorTargetValues.{Channel}Status` directly when `LerpProgress ≥ 0.5` in `UfoDetector/Services/SensorTickService.cs`
-- [ ] T049 [US4] Update `RadarCanvasView`: on `ActiveAnomaly` change, instantiate `RadarBlip` list from `RadarBlipTemplate.Count` range; apply per-frame angular/radial drift; intensity decays after sweep passes and resets on revisit; clear blips when `Phase` returns to `Idle` in `UfoDetector/Controls/RadarCanvasView.cs`
-- [ ] T050 [US4] Update `InfrasoundCanvasView`: lerp the 20-band amplitude array from baseline (~0.05 per bin) toward `SensorTargetValues.InfrasoundBands` using `LerpProgress`; bars exceeding the alarm threshold render in red per quickstart.md V-7 procedure in `UfoDetector/Controls/InfrasoundCanvasView.cs`
-- [ ] T051 [US4] Add `Narrative` label to `DetectorPage.xaml` bound to `ActiveAnomaly?.Narrative`; show only when `Phase` is `Active` or `Appearing`; hide (collapsed) during `Idle` and `Fading` in `UfoDetector/Views/DetectorPage.xaml`
-- [ ] T052 [US4] Bind gauge fill colour and status label colour to `SensorStatus` via `IValueConverter` (Normal→green, Elevated→amber, Anomaly→amber, Danger→red, Critical→red, CriticalHigh→red) in `UfoDetector/Views/DetectorPage.xaml`
+- [X] T048 [US4] Update `SensorTickService`: when `Phase` is `Appearing` or `Active`, lerp each sensor channel from `SensorBaseline` toward `SensorTargetValues` using `LerpProgress`; derive `SensorStatus` from `SensorBaseline` thresholds when `LerpProgress < 0.5`, and use `SensorTargetValues.{Channel}Status` directly when `LerpProgress ≥ 0.5` in `UfoDetector/Services/SensorTickService.cs`
+- [X] T049 [US4] Update `RadarCanvasView`: on `ActiveAnomaly` change, instantiate `RadarBlip` list from `RadarBlipTemplate.Count` range; apply per-frame angular/radial drift; intensity decays after sweep passes and resets on revisit; clear blips when `Phase` returns to `Idle` in `UfoDetector/Controls/RadarCanvasView.cs`
+- [X] T050 [US4] Update `InfrasoundCanvasView`: lerp the 20-band amplitude array from baseline (~0.05 per bin) toward `SensorTargetValues.InfrasoundBands` using `LerpProgress`; bars exceeding the alarm threshold render in red per quickstart.md V-7 procedure in `UfoDetector/Controls/InfrasoundCanvasView.cs`
+- [X] T051 [US4] Add `Narrative` label to `DetectorPage.xaml` bound to `ActiveAnomaly?.Narrative`; show only when `Phase` is `Active` or `Appearing`; hide (collapsed) during `Idle` and `Fading` in `UfoDetector/Views/DetectorPage.xaml`
+- [X] T052 [US4] Bind gauge fill colour and status label colour to `SensorStatus` via `IValueConverter` (Normal→green, Elevated→amber, Anomaly→amber, Danger→red, Critical→red, CriticalHigh→red) in `UfoDetector/Views/DetectorPage.xaml`
 
 **Checkpoint**: `dotnet test` passes (T047 green). On device: cycle all 5 anomaly combinations; each produces the correct sensor readouts, status colours, radar blip type/count, and infrasound pattern per quickstart.md V-4.
 

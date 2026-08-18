@@ -2,11 +2,15 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:UfoDetector.Controls"
+             xmlns:converters="clr-namespace:UfoDetector.Converters"
              x:Class="UfoDetector.Views.DetectorPage"
              BackgroundColor="{StaticResource CrtBackground}"
              Title="">
 
     <ContentPage.Resources>
+        <converters:SensorStatusToColorConverter x:Key="StatusColorConverter" />
+        <converters:SensorStatusToTextConverter  x:Key="StatusTextConverter"  />
+
         <!-- Gauge panel border style -->
         <Style x:Key="PanelBorder" TargetType="Border">
             <Setter Property="Stroke"          Value="#1A3A20" />
@@ -67,7 +71,7 @@
     </ContentPage.Resources>
 
     <!-- Root: header + body -->
-    <Grid RowDefinitions="Auto, *, Auto, Auto">
+    <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
 
         <!-- ── A: Header ──────────────────────────────────────────────────── -->
         <Border Grid.Row="0" Style="{StaticResource PanelBorder}" Margin="2,2,2,0">
@@ -93,7 +97,9 @@
                     <Grid ColumnDefinitions="*, Auto">
                         <controls:RadarCanvasView Grid.Column="0"
                             HeightRequest="260" WidthRequest="260"
-                            HorizontalOptions="Start" />
+                            HorizontalOptions="Start"
+                            ActiveAnomaly="{Binding ActiveAnomaly}"
+                            Phase="{Binding Phase}" />
                         <!-- Blip legend -->
                         <StackLayout Grid.Column="1" Spacing="4" Padding="8,4" VerticalOptions="Center">
                             <Label Text="РАДАРНЫЙ МОДУЛЬ" Style="{StaticResource SectionHeader}" />
@@ -131,8 +137,12 @@
                         <Label Text="НЕЙТР. ИЗЛ."    Style="{StaticResource GaugeName}" />
                         <Label Text="{Binding NeutronValue, StringFormat='{0:F1}'}" Style="{StaticResource GaugeValue}" />
                         <Label Text="{Binding NeutronUnit}"     Style="{StaticResource GaugeUnit}" />
-                        <ProgressBar Progress="{Binding NeutronNormalized}" Style="{StaticResource GaugeBar}" />
-                        <Label Text="НОРМА"           Style="{StaticResource GaugeStatus}" />
+                        <ProgressBar Progress="{Binding NeutronNormalized}"
+                                     ProgressColor="{Binding NeutronStatus, Converter={StaticResource StatusColorConverter}}"
+                                     Style="{StaticResource GaugeBar}" />
+                        <Label Text="{Binding NeutronStatus, Converter={StaticResource StatusTextConverter}}"
+                               TextColor="{Binding NeutronStatus, Converter={StaticResource StatusColorConverter}}"
+                               Style="{StaticResource GaugeStatus}" />
                     </StackLayout>
                 </Border>
 
@@ -142,8 +152,12 @@
                         <Label Text="ИОНИЗАЦИЯ"       Style="{StaticResource GaugeName}" />
                         <Label Text="{Binding IonisationValue, StringFormat='{0:F0}'}" Style="{StaticResource GaugeValue}" />
                         <Label Text="{Binding IonisationUnit}" Style="{StaticResource GaugeUnit}" />
-                        <ProgressBar Progress="{Binding IonisationNormalized}" Style="{StaticResource GaugeBar}" />
-                        <Label Text="НОРМА"           Style="{StaticResource GaugeStatus}" />
+                        <ProgressBar Progress="{Binding IonisationNormalized}"
+                                     ProgressColor="{Binding IonisationStatus, Converter={StaticResource StatusColorConverter}}"
+                                     Style="{StaticResource GaugeBar}" />
+                        <Label Text="{Binding IonisationStatus, Converter={StaticResource StatusTextConverter}}"
+                               TextColor="{Binding IonisationStatus, Converter={StaticResource StatusColorConverter}}"
+                               Style="{StaticResource GaugeStatus}" />
                     </StackLayout>
                 </Border>
 
@@ -153,8 +167,12 @@
                         <Label Text="ГЕОМАГН. ПОЛЕ"   Style="{StaticResource GaugeName}" />
                         <Label Text="{Binding GeomagneticValue, StringFormat='{0:F0}'}" Style="{StaticResource GaugeValue}" />
                         <Label Text="{Binding GeomagneticUnit}" Style="{StaticResource GaugeUnit}" />
-                        <ProgressBar Progress="{Binding GeomagneticNormalized}" Style="{StaticResource GaugeBar}" />
-                        <Label Text="НОРМА"           Style="{StaticResource GaugeStatus}" />
+                        <ProgressBar Progress="{Binding GeomagneticNormalized}"
+                                     ProgressColor="{Binding GeomagneticStatus, Converter={StaticResource StatusColorConverter}}"
+                                     Style="{StaticResource GaugeBar}" />
+                        <Label Text="{Binding GeomagneticStatus, Converter={StaticResource StatusTextConverter}}"
+                               TextColor="{Binding GeomagneticStatus, Converter={StaticResource StatusColorConverter}}"
+                               Style="{StaticResource GaugeStatus}" />
                     </StackLayout>
                 </Border>
 
@@ -164,8 +182,12 @@
                         <Label Text="ТЕПЛ. АНОМ."     Style="{StaticResource GaugeName}" />
                         <Label Text="{Binding ThermalValue, StringFormat='{0:F2}'}" Style="{StaticResource GaugeValue}" />
                         <Label Text="{Binding ThermalUnit}"    Style="{StaticResource GaugeUnit}" />
-                        <ProgressBar Progress="{Binding ThermalNormalized}" Style="{StaticResource GaugeBar}" />
-                        <Label Text="НОРМА"           Style="{StaticResource GaugeStatus}" />
+                        <ProgressBar Progress="{Binding ThermalNormalized}"
+                                     ProgressColor="{Binding ThermalStatus, Converter={StaticResource StatusColorConverter}}"
+                                     Style="{StaticResource GaugeBar}" />
+                        <Label Text="{Binding ThermalStatus, Converter={StaticResource StatusTextConverter}}"
+                               TextColor="{Binding ThermalStatus, Converter={StaticResource StatusColorConverter}}"
+                               Style="{StaticResource GaugeStatus}" />
                     </StackLayout>
                 </Border>
 
@@ -266,18 +288,29 @@
                        VerticalOptions="Center" />
                 <ProgressBar Grid.Column="2"
                              Progress="{Binding ChronoNormalized}"
-                             ProgressColor="{StaticResource PhosphorGreen}"
+                             ProgressColor="{Binding ChronoStatus, Converter={StaticResource StatusColorConverter}}"
                              HeightRequest="4" WidthRequest="80"
                              VerticalOptions="Center" Margin="8,0" />
                 <Label Grid.Column="3"
-                       Text="НОРМА"
+                       Text="{Binding ChronoStatus, Converter={StaticResource StatusTextConverter}}"
+                       TextColor="{Binding ChronoStatus, Converter={StaticResource StatusColorConverter}}"
                        Style="{StaticResource GaugeStatus}" FontSize="10"
                        VerticalOptions="Center" />
             </Grid>
         </Border>
 
-        <!-- ── E: Infrasound spectrum ─────────────────────────────────────── -->
-        <Border Grid.Row="3" Style="{StaticResource PanelBorder}">
+        <!-- ── E: Narrative (disabled) ────────────────────────────────────── -->
+        <Border Grid.Row="3" Style="{StaticResource PanelBorder}"
+                IsVisible="False">
+            <Label Text="{Binding Narrative}"
+                   FontFamily="ShareTechMono" FontSize="10"
+                   TextColor="{StaticResource PhosphorGreenDim}"
+                   LineBreakMode="WordWrap"
+                   Margin="4,2" />
+        </Border>
+
+        <!-- ── F: Infrasound spectrum ─────────────────────────────────────── -->
+        <Border Grid.Row="4" Style="{StaticResource PanelBorder}">
             <StackLayout Spacing="4">
                 <Label Text="ИНФРАЗВУК  0 — 20 Гц" Style="{StaticResource SectionHeader}" />
                 <controls:InfrasoundCanvasView
