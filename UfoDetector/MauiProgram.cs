@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Storage;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using UfoDetector.Services;
 using UfoDetector.ViewModels;
@@ -30,6 +31,8 @@ public static class MauiProgram
 			_ => Application.Current!.Dispatcher.CreateTimer());
 		builder.Services.AddSingleton<ISensorTickService, SensorTickService>();
 		builder.Services.AddSingleton<ITransitionOrchestrator, TransitionOrchestrator>();
+		builder.Services.AddSingleton<IAnomalyEvaluator, NullAnomalyEvaluator>();
+		builder.Services.AddSingleton<IPreferences>(_ => Preferences.Default);
 
 		// ViewModel + Page (singleton so DI resolves them once)
 		builder.Services.AddSingleton<DetectorViewModel>();

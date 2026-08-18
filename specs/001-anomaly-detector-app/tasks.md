@@ -108,14 +108,14 @@ description: "Task list for UFO Anomaly Detector App implementation"
 
 ### Tests for User Story 2 (Write FIRST — must FAIL before implementation)
 
-- [ ] T035 [P] [US2] Extend `DetectorViewModelTests`: assert `ToggleModeCommand` switches `Mode` between `Active`/`Passive`; assert `Sensitivity` and `NoiseSuppression` observable properties update to exact input values (0, 50, 100, boundaries); assert values are saved to `Preferences` on change in `UfoDetector.Tests/ViewModels/DetectorViewModelTests.cs`
+- [X] T035 [P] [US2] Extend `DetectorViewModelTests`: assert `ToggleModeCommand` switches `Mode` between `Active`/`Passive`; assert `Sensitivity` and `NoiseSuppression` observable properties update to exact input values (0, 50, 100, boundaries); assert values are saved to `Preferences` on change in `UfoDetector.Tests/ViewModels/DetectorViewModelTests.cs`
 
 ### Implementation for User Story 2
 
-- [ ] T036 [US2] Add `[RelayCommand] ToggleMode()` and `[ObservableProperty] DetectorMode Mode` to `DetectorViewModel`; on mode change call `IAnomalyEvaluator.Evaluate()` stub; update LED indicator property in `UfoDetector/ViewModels/DetectorViewModel.cs`
-- [ ] T037 [US2] Add `[ObservableProperty] int Sensitivity` and `[ObservableProperty] int NoiseSuppression` to `DetectorViewModel`; persist both via `Microsoft.Maui.Storage.Preferences` on set; restore from `Preferences` in constructor in `UfoDetector/ViewModels/DetectorViewModel.cs`
-- [ ] T038 [US2] Add controls panel to `DetectorPage.xaml`: mode toggle `Button` with LED indicator, sensitivity `Slider` (0–100, rotated 270° with swapped Width/Height per spec.md Assumptions — if MAUI Slider touch events mis-map on Android, replace with custom SkiaSharp touch-drag control), noise-suppression `Slider` (0–100, rotated 270°), numeric labels bound to `Sensitivity` and `NoiseSuppression` in `UfoDetector/Views/DetectorPage.xaml`
-- [ ] T039 [US2] Style the mode toggle LED indicator (green = АКТИВ, amber/off = ПАССИВ) using `Colors.xaml` palette entries and a `Style` trigger in `UfoDetector/Views/DetectorPage.xaml`
+- [X] T036 [US2] Add `[RelayCommand] ToggleMode()` and `[ObservableProperty] DetectorMode Mode` to `DetectorViewModel`; on mode change call `IAnomalyEvaluator.Evaluate()` stub; update LED indicator property in `UfoDetector/ViewModels/DetectorViewModel.cs`
+- [X] T037 [US2] Add `[ObservableProperty] int Sensitivity` and `[ObservableProperty] int NoiseSuppression` to `DetectorViewModel`; persist both via `Microsoft.Maui.Storage.Preferences` on set; restore from `Preferences` in constructor in `UfoDetector/ViewModels/DetectorViewModel.cs`
+- [X] T038 [US2] Add controls panel to `DetectorPage.xaml`: mode toggle `Button` with LED indicator, sensitivity `Slider` (0–100, rotated 270° with swapped Width/Height per spec.md Assumptions — if MAUI Slider touch events mis-map on Android, replace with custom SkiaSharp touch-drag control), noise-suppression `Slider` (0–100, rotated 270°), numeric labels bound to `Sensitivity` and `NoiseSuppression` in `UfoDetector/Views/DetectorPage.xaml`
+- [X] T039 [US2] Style the mode toggle LED indicator (green = АКТИВ, amber/off = ПАССИВ) using `Colors.xaml` palette entries and a `Style` trigger in `UfoDetector/Views/DetectorPage.xaml`
 
 **Checkpoint**: `dotnet test` passes (T035 green). On device: toggle cycles correctly, sliders update labels, values survive app restart. Story 2 demonstrable independently of anomaly logic.
 

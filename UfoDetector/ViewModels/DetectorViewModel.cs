@@ -1,4 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Storage;
 using UfoDetector.Models;
 using UfoDetector.Models.Enums;
 using UfoDetector.Services;
@@ -9,6 +11,16 @@ public partial class DetectorViewModel : ObservableObject
 {
     private readonly ISensorTickService _tickService;
     private readonly ITransitionOrchestrator _orchestrator;
+    private readonly IAnomalyEvaluator _evaluator;
+    private readonly IPreferences _preferences;
+
+    // Suppresses preference writes triggered by the constructor restore
+    private bool _isInitializing = true;
+
+    private const string PrefKeySensitivity      = "Sensitivity";
+    private const string PrefKeyNoiseSuppression = "NoiseSuppression";
+
+    // ── Sensor readings ───────────────────────────────────────────────────────
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(NeutronNormalized))]
@@ -38,26 +50,49 @@ public partial class DetectorViewModel : ObservableObject
 
     [ObservableProperty] public partial double[] InfrasoundBands { get; set; }
 
-    // Unit labels — static, no need to be observable
+    // ── Controls (Phase 4) ────────────────────────────────────────────────────
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsActiveMode))]
+    [NotifyPropertyChangedFor(nameof(ModeLabel))]
+    public partial DetectorMode Mode { get; set; }
+
+    [ObservableProperty] public partial int Sensitivity      { get; set; }
+    [ObservableProperty] public partial int NoiseSuppression { get; set; }
+
+    public bool   IsActiveMode => Mode == DetectorMode.Active;
+    public string ModeLabel    => Mode == DetectorMode.Active ? "АКТИВ" : "ПАССИВ";
+
+    // ── Units (static) ────────────────────────────────────────────────────────
+
     public string NeutronUnit     => "мЗв/ч";
     public string IonisationUnit  => "%";
     public string GeomagneticUnit => "нТл";
     public string ThermalUnit     => "°C";
     public string ChronoUnit      => "Δt с";
 
-    // Normalised [0,1] fill-bar values based on critical threshold
+    // ── Normalised fill-bar values [0,1] ─────────────────────────────────────
+
     public double NeutronNormalized     => Math.Clamp(NeutronValue     / SensorBaseline.Neutron.CriticalThreshold,     0.0, 1.0);
     public double IonisationNormalized  => Math.Clamp(IonisationValue  / SensorBaseline.Ionisation.CriticalThreshold,  0.0, 1.0);
     public double GeomagneticNormalized => Math.Clamp(GeomagneticValue / SensorBaseline.Geomagnetic.CriticalThreshold, 0.0, 1.0);
     public double ThermalNormalized     => Math.Clamp(ThermalValue     / SensorBaseline.Thermal.CriticalThreshold,     0.0, 1.0);
     public double ChronoNormalized      => Math.Clamp(ChronoValue      / SensorBaseline.Chrono.CriticalThreshold,      0.0, 1.0);
 
-    public DetectorViewModel(ISensorTickService tickService, ITransitionOrchestrator orchestrator)
+    // ── Constructor ───────────────────────────────────────────────────────────
+
+    public DetectorViewModel(
+        ISensorTickService    tickService,
+        ITransitionOrchestrator orchestrator,
+        IAnomalyEvaluator     evaluator,
+        IPreferences          preferences)
     {
         _tickService  = tickService;
         _orchestrator = orchestrator;
+        _evaluator    = evaluator;
+        _preferences  = preferences;
 
-        // Initialise from baselines so the UI shows correct values before first tick
+        // Sensor baselines
         NeutronValue     = SensorBaseline.Neutron.BaselineValue;
         IonisationValue  = SensorBaseline.Ionisation.BaselineValue;
         GeomagneticValue = SensorBaseline.Geomagnetic.BaselineValue;
@@ -73,8 +108,43 @@ public partial class DetectorViewModel : ObservableObject
         InfrasoundBands = new double[20];
         Array.Fill(InfrasoundBands, 0.05);
 
+        // Controls — restore persisted values; init flag prevents writing them back
+        Mode             = DetectorMode.Passive;
+        Sensitivity      = _preferences.Get(PrefKeySensitivity,      50, null);
+        NoiseSuppression = _preferences.Get(PrefKeyNoiseSuppression, 50, null);
+
+        _isInitializing = false;
+
         _tickService.Ticked += OnTicked;
     }
+
+    // ── Commands ──────────────────────────────────────────────────────────────
+
+    [RelayCommand]
+    private void ToggleMode()
+    {
+        Mode = Mode == DetectorMode.Active ? DetectorMode.Passive : DetectorMode.Active;
+        _evaluator.Evaluate(new DetectorState
+        {
+            Mode             = Mode,
+            Sensitivity      = Sensitivity,
+            NoiseSuppression = NoiseSuppression,
+        });
+    }
+
+    // ── Preference persistence hooks ─────────────────────────────────────────
+
+    partial void OnSensitivityChanged(int value)
+    {
+        if (!_isInitializing) _preferences.Set(PrefKeySensitivity, value, null);
+    }
+
+    partial void OnNoiseSuppressionChanged(int value)
+    {
+        if (!_isInitializing) _preferences.Set(PrefKeyNoiseSuppression, value, null);
+    }
+
+    // ── Tick handler ──────────────────────────────────────────────────────────
 
     private void OnTicked(object? sender, EventArgs e)
     {

@@ -171,12 +171,85 @@
 
             </Grid>
 
-            <!-- Right column: Controls placeholder (Phase 4) -->
+            <!-- Right column: Controls panel -->
             <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
-                <StackLayout Spacing="8" Padding="4">
-                    <Label Text="РЕЖИМ ПОИСКА" Style="{StaticResource SectionHeader}" />
-                    <Label Text="(Фаза 4)" FontFamily="ShareTechMono" FontSize="10" TextColor="#2A6640" HorizontalOptions="Center" />
-                </StackLayout>
+                <Grid RowDefinitions="Auto, Auto, Auto, *, Auto, Auto">
+
+                    <!-- Mode section header -->
+                    <Label Grid.Row="0" Text="РЕЖИМ ПОИСКА" Style="{StaticResource SectionHeader}" />
+
+                    <!-- Mode toggle: LED + Button (T039) -->
+                    <Border Grid.Row="1" Style="{StaticResource PanelBorder}" Margin="2,2,2,6">
+                        <Grid ColumnDefinitions="Auto, *" Padding="2">
+                            <!-- LED indicator: green=АКТИВ, amber=ПАССИВ -->
+                            <BoxView Grid.Column="0"
+                                     WidthRequest="10" HeightRequest="10" CornerRadius="5"
+                                     VerticalOptions="Center" Margin="0,0,8,0"
+                                     Color="{StaticResource StatusAmber}">
+                                <BoxView.Style>
+                                    <Style TargetType="BoxView">
+                                        <Setter Property="Color" Value="{StaticResource StatusAmber}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger TargetType="BoxView"
+                                                         Binding="{Binding IsActiveMode}" Value="True">
+                                                <Setter Property="Color" Value="{StaticResource PhosphorGreen}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </BoxView.Style>
+                            </BoxView>
+                            <Button Grid.Column="1"
+                                    Text="{Binding ModeLabel}"
+                                    Command="{Binding ToggleModeCommand}"
+                                    FontFamily="ShareTechMono" FontSize="12"
+                                    BackgroundColor="Transparent"
+                                    BorderColor="{StaticResource PhosphorGreenDim}"
+                                    BorderWidth="1"
+                                    TextColor="{StaticResource PhosphorGreen}"
+                                    Padding="4,4" />
+                        </Grid>
+                    </Border>
+
+                    <!-- Regulators section header -->
+                    <Label Grid.Row="2" Text="РЕГУЛЯТОРЫ" Style="{StaticResource SectionHeader}" />
+
+                    <!-- Vertical sliders (T038): rotate horizontal Slider 270° -->
+                    <Grid Grid.Row="3" ColumnDefinitions="*, *" VerticalOptions="Fill">
+
+                        <!-- Sensitivity column -->
+                        <StackLayout Grid.Column="0" Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label Text="{Binding Sensitivity, StringFormat='{0}%'}"
+                                   Style="{StaticResource GaugeValue}" FontSize="13"/>
+                            <!-- Rotated slider: WidthRequest becomes visual height -->
+                            <Grid HeightRequest="190" WidthRequest="40">
+                                <Slider Minimum="0" Maximum="100"
+                                        Value="{Binding Sensitivity, Mode=TwoWay}"
+                                        Rotation="270"
+                                        WidthRequest="180"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="Center" />
+                            </Grid>
+                            <Label Text="ЧУВСТВ." Style="{StaticResource GaugeName}"/>
+                        </StackLayout>
+
+                        <!-- Noise suppression column -->
+                        <StackLayout Grid.Column="1" Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label Text="{Binding NoiseSuppression, StringFormat='{0}%'}"
+                                   Style="{StaticResource GaugeValue}" FontSize="13"/>
+                            <Grid HeightRequest="190" WidthRequest="40">
+                                <Slider Minimum="0" Maximum="100"
+                                        Value="{Binding NoiseSuppression, Mode=TwoWay}"
+                                        Rotation="270"
+                                        WidthRequest="180"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="Center" />
+                            </Grid>
+                            <Label Text="ПОМЕХИ" Style="{StaticResource GaugeName}"/>
+                        </StackLayout>
+
+                    </Grid>
+
+                </Grid>
             </Border>
 
         </Grid>
