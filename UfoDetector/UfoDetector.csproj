@@ -15,7 +15,7 @@
 		<ApplicationId>com.companyname.ufodetector</ApplicationId>
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">26.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">25.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<!-- net10.0 TFM compiles as a library so dotnet test does not require a Main entry point -->
