@@ -16,6 +16,18 @@ public partial class DetectorViewModel : ObservableObject
     // Suppresses preference writes triggered by the constructor restore
     private bool _isInitializing = true;
 
+    // Ping-ponged so OnTicked never allocates a new array (avoids 10 Hz GC pressure)
+    private readonly double[] _bandsBufferA = new double[20];
+    private readonly double[] _bandsBufferB = new double[20];
+    private bool _useBufferA = true;
+
+    // Numeric gauges/progress bars are throttled per plan.md's documented perf goal
+    // ("sensor value ticks at ~100 ms, display update at 1-2 s"): gfxinfo showed the
+    // main UI thread (label/progress-bar layout+draw) as the dominant jank source,
+    // and updating faster than ~1.5s is imperceptible for a numeric readout anyway.
+    private const int UiRefreshDivisor = 15; // 15 * 100ms tick = 1.5s
+    private int _tickCounter;
+
     private const string PrefKeySensitivity      = "Sensitivity";
     private const string PrefKeyNoiseSuppression = "NoiseSuppression";
 
@@ -160,24 +172,35 @@ public partial class DetectorViewModel : ObservableObject
 
     private void OnTicked(object? sender, EventArgs e)
     {
-        NeutronValue     = _tickService.NeutronValue;
-        IonisationValue  = _tickService.IonisationValue;
-        GeomagneticValue = _tickService.GeomagneticValue;
-        ThermalValue     = _tickService.ThermalValue;
-        ChronoValue      = _tickService.ChronoValue;
+        bool refreshGauges = ++_tickCounter >= UiRefreshDivisor;
+        if (refreshGauges)
+            _tickCounter = 0;
 
-        NeutronStatus     = _tickService.NeutronStatus;
-        IonisationStatus  = _tickService.IonisationStatus;
-        GeomagneticStatus = _tickService.GeomagneticStatus;
-        ThermalStatus     = _tickService.ThermalStatus;
-        ChronoStatus      = _tickService.ChronoStatus;
+        if (refreshGauges)
+        {
+            NeutronValue     = _tickService.NeutronValue;
+            IonisationValue  = _tickService.IonisationValue;
+            GeomagneticValue = _tickService.GeomagneticValue;
+            ThermalValue     = _tickService.ThermalValue;
+            ChronoValue      = _tickService.ChronoValue;
 
-        // Copy bands to avoid retaining a reference to the service's internal array
-        var bands = _tickService.InfrasoundBands;
-        var copy = new double[20];
-        Array.Copy(bands, copy, 20);
-        InfrasoundBands = copy;
+            NeutronStatus     = _tickService.NeutronStatus;
+            IonisationStatus  = _tickService.IonisationStatus;
+            GeomagneticStatus = _tickService.GeomagneticStatus;
+            ThermalStatus     = _tickService.ThermalStatus;
+            ChronoStatus      = _tickService.ChronoStatus;
 
+            // Copy into the idle buffer to avoid retaining a reference to the service's
+            // internal array, without allocating a new one on every tick
+            var bands = _tickService.InfrasoundBands;
+            var target = _useBufferA ? _bandsBufferA : _bandsBufferB;
+            Array.Copy(bands, target, 20);
+            InfrasoundBands = target;
+            _useBufferA = !_useBufferA;
+        }
+
+        // Cheap no-op when unchanged (ObservableProperty skips equal values) and
+        // drives the radar's blip spawning, so keep these on every tick
         ActiveAnomaly = _tickService.ActiveAnomaly;
         Phase         = _tickService.Phase;
         LerpProgress  = _tickService.LerpProgress;

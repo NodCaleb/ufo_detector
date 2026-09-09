@@ -3,13 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:UfoDetector.Controls"
              xmlns:converters="clr-namespace:UfoDetector.Converters"
+             xmlns:vm="clr-namespace:UfoDetector.ViewModels"
              x:Class="UfoDetector.Views.DetectorPage"
+             x:DataType="vm:DetectorViewModel"
              BackgroundColor="{StaticResource CrtBackground}"
              Title="">
 
     <ContentPage.Resources>
         <converters:SensorStatusToColorConverter x:Key="StatusColorConverter" />
         <converters:SensorStatusToTextConverter  x:Key="StatusTextConverter"  />
+        <converters:NormalizedToHeightConverter  x:Key="NormalizedToHeightConverter" />
 
         <!-- Gauge panel border style -->
         <Style x:Key="PanelBorder" TargetType="Border">
@@ -18,7 +21,7 @@
             <Setter Property="Padding"         Value="6" />
             <Setter Property="Margin"          Value="2" />
             <Setter Property="BackgroundColor" Value="#060F08" />
-            <Setter Property="StrokeShape"     Value="RoundRectangle 4,4,4,4" />
+            <Setter Property="StrokeShape"     Value="Rectangle" />
         </Style>
 
         <!-- Sensor name label -->
@@ -90,10 +93,10 @@
         <Grid Grid.Row="1" ColumnDefinitions="*, 220">
 
             <!-- Left column: Radar + 4 sensors -->
-            <Grid ColumnDefinitions="*, *" RowDefinitions="*,Auto,Auto">
+            <Grid RowDefinitions="*, Auto">
 
-                <!-- Radar (spans 2 columns) -->
-                <Border Grid.Row="0" Grid.ColumnSpan="2" Style="{StaticResource PanelBorder}">
+                <!-- Radar -->
+                <Border Grid.Row="0" Style="{StaticResource PanelBorder}">
                     <Grid ColumnDefinitions="*, Auto">
                         <controls:RadarCanvasView Grid.Column="0"
                             HeightRequest="260" WidthRequest="260"
@@ -104,92 +107,109 @@
                         <StackLayout Grid.Column="1" Spacing="4" Padding="8,4" VerticalOptions="Center">
                             <Label Text="РАДАРНЫЙ МОДУЛЬ" Style="{StaticResource SectionHeader}" />
                             <StackLayout Orientation="Horizontal" Spacing="4">
-                                <BoxView Color="#39FF14" WidthRequest="8" HeightRequest="8" CornerRadius="4" VerticalOptions="Center"/>
+                                <BoxView Color="#39FF14" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
                                 <Label Text="ЭМ" FontFamily="ShareTechMono" FontSize="9" TextColor="#39FF14" VerticalOptions="Center"/>
                             </StackLayout>
                             <StackLayout Orientation="Horizontal" Spacing="4">
-                                <BoxView Color="#FFB300" WidthRequest="8" HeightRequest="8" CornerRadius="4" VerticalOptions="Center"/>
+                                <BoxView Color="#FFB300" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
                                 <Label Text="ИЗЛУЧЕНИЕ" FontFamily="ShareTechMono" FontSize="9" TextColor="#FFB300" VerticalOptions="Center"/>
                             </StackLayout>
                             <StackLayout Orientation="Horizontal" Spacing="4">
-                                <BoxView Color="#44AAFF" WidthRequest="8" HeightRequest="8" CornerRadius="4" VerticalOptions="Center"/>
+                                <BoxView Color="#44AAFF" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
                                 <Label Text="ИОНИЗАЦИЯ" FontFamily="ShareTechMono" FontSize="9" TextColor="#44AAFF" VerticalOptions="Center"/>
                             </StackLayout>
                             <StackLayout Orientation="Horizontal" Spacing="4">
-                                <BoxView Color="#FF6600" WidthRequest="8" HeightRequest="8" CornerRadius="4" VerticalOptions="Center"/>
+                                <BoxView Color="#FF6600" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
                                 <Label Text="ТЕПЛОВОЙ" FontFamily="ShareTechMono" FontSize="9" TextColor="#FF6600" VerticalOptions="Center"/>
                             </StackLayout>
                             <StackLayout Orientation="Horizontal" Spacing="4">
-                                <BoxView Color="#00DDCC" WidthRequest="8" HeightRequest="8" CornerRadius="4" VerticalOptions="Center"/>
+                                <BoxView Color="#00DDCC" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
                                 <Label Text="ГЕОМАГН." FontFamily="ShareTechMono" FontSize="9" TextColor="#00DDCC" VerticalOptions="Center"/>
                             </StackLayout>
                             <StackLayout Orientation="Horizontal" Spacing="4">
-                                <BoxView Color="#CC44FF" WidthRequest="8" HeightRequest="8" CornerRadius="4" VerticalOptions="Center"/>
+                                <BoxView Color="#CC44FF" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
                                 <Label Text="ХРОНО" FontFamily="ShareTechMono" FontSize="9" TextColor="#CC44FF" VerticalOptions="Center"/>
                             </StackLayout>
                         </StackLayout>
                     </Grid>
                 </Border>
 
-                <!-- C1: Neutron gauge -->
-                <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource PanelBorder}">
-                    <StackLayout Spacing="2">
-                        <Label Text="НЕЙТР. ИЗЛ."    Style="{StaticResource GaugeName}" />
-                        <Label Text="{Binding NeutronValue, StringFormat='{0:F1}'}" Style="{StaticResource GaugeValue}" />
-                        <Label Text="{Binding NeutronUnit}"     Style="{StaticResource GaugeUnit}" />
-                        <ProgressBar Progress="{Binding NeutronNormalized}"
-                                     ProgressColor="{Binding NeutronStatus, Converter={StaticResource StatusColorConverter}}"
-                                     Style="{StaticResource GaugeBar}" />
-                        <Label Text="{Binding NeutronStatus, Converter={StaticResource StatusTextConverter}}"
-                               TextColor="{Binding NeutronStatus, Converter={StaticResource StatusColorConverter}}"
-                               Style="{StaticResource GaugeStatus}" />
-                    </StackLayout>
-                </Border>
+                <!-- C: sensor gauges — single row of 4 vertical meters -->
+                <Grid Grid.Row="1" ColumnDefinitions="*, *, *, *">
 
-                <!-- C2: Ionisation gauge -->
-                <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource PanelBorder}">
-                    <StackLayout Spacing="2">
-                        <Label Text="ИОНИЗАЦИЯ"       Style="{StaticResource GaugeName}" />
-                        <Label Text="{Binding IonisationValue, StringFormat='{0:F0}'}" Style="{StaticResource GaugeValue}" />
-                        <Label Text="{Binding IonisationUnit}" Style="{StaticResource GaugeUnit}" />
-                        <ProgressBar Progress="{Binding IonisationNormalized}"
-                                     ProgressColor="{Binding IonisationStatus, Converter={StaticResource StatusColorConverter}}"
-                                     Style="{StaticResource GaugeBar}" />
-                        <Label Text="{Binding IonisationStatus, Converter={StaticResource StatusTextConverter}}"
-                               TextColor="{Binding IonisationStatus, Converter={StaticResource StatusColorConverter}}"
-                               Style="{StaticResource GaugeStatus}" />
-                    </StackLayout>
-                </Border>
+                    <!-- C1: Neutron gauge -->
+                    <Border Grid.Column="0" Style="{StaticResource PanelBorder}">
+                        <StackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="НЕЙТР. ИЗЛ."    Style="{StaticResource GaugeName}" />
+                            <Label Text="{Binding NeutronValue, StringFormat='{0:F1}'}" Style="{StaticResource GaugeValue}" />
+                            <Label Text="{Binding NeutronUnit}"     Style="{StaticResource GaugeUnit}" />
+                            <Grid WidthRequest="40" HeightRequest="120" HorizontalOptions="Center">
+                                <BoxView Color="{Binding NeutronStatus, Converter={StaticResource StatusColorConverter}}"
+                                         WidthRequest="24"
+                                         HeightRequest="{Binding NeutronNormalized, Converter={StaticResource NormalizedToHeightConverter}, ConverterParameter=120}"
+                                         VerticalOptions="End" HorizontalOptions="Center" />
+                            </Grid>
+                            <Label Text="{Binding NeutronStatus, Converter={StaticResource StatusTextConverter}}"
+                                   TextColor="{Binding NeutronStatus, Converter={StaticResource StatusColorConverter}}"
+                                   Style="{StaticResource GaugeStatus}" />
+                        </StackLayout>
+                    </Border>
 
-                <!-- C3: Geomagnetic gauge -->
-                <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource PanelBorder}">
-                    <StackLayout Spacing="2">
-                        <Label Text="ГЕОМАГН. ПОЛЕ"   Style="{StaticResource GaugeName}" />
-                        <Label Text="{Binding GeomagneticValue, StringFormat='{0:F0}'}" Style="{StaticResource GaugeValue}" />
-                        <Label Text="{Binding GeomagneticUnit}" Style="{StaticResource GaugeUnit}" />
-                        <ProgressBar Progress="{Binding GeomagneticNormalized}"
-                                     ProgressColor="{Binding GeomagneticStatus, Converter={StaticResource StatusColorConverter}}"
-                                     Style="{StaticResource GaugeBar}" />
-                        <Label Text="{Binding GeomagneticStatus, Converter={StaticResource StatusTextConverter}}"
-                               TextColor="{Binding GeomagneticStatus, Converter={StaticResource StatusColorConverter}}"
-                               Style="{StaticResource GaugeStatus}" />
-                    </StackLayout>
-                </Border>
+                    <!-- C2: Ionisation gauge -->
+                    <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
+                        <StackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="ИОНИЗАЦИЯ"       Style="{StaticResource GaugeName}" />
+                            <Label Text="{Binding IonisationValue, StringFormat='{0:F0}'}" Style="{StaticResource GaugeValue}" />
+                            <Label Text="{Binding IonisationUnit}" Style="{StaticResource GaugeUnit}" />
+                            <Grid WidthRequest="40" HeightRequest="120" HorizontalOptions="Center">
+                                <BoxView Color="{Binding IonisationStatus, Converter={StaticResource StatusColorConverter}}"
+                                         WidthRequest="24"
+                                         HeightRequest="{Binding IonisationNormalized, Converter={StaticResource NormalizedToHeightConverter}, ConverterParameter=120}"
+                                         VerticalOptions="End" HorizontalOptions="Center" />
+                            </Grid>
+                            <Label Text="{Binding IonisationStatus, Converter={StaticResource StatusTextConverter}}"
+                                   TextColor="{Binding IonisationStatus, Converter={StaticResource StatusColorConverter}}"
+                                   Style="{StaticResource GaugeStatus}" />
+                        </StackLayout>
+                    </Border>
 
-                <!-- C4: Thermal gauge -->
-                <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource PanelBorder}">
-                    <StackLayout Spacing="2">
-                        <Label Text="ТЕПЛ. АНОМ."     Style="{StaticResource GaugeName}" />
-                        <Label Text="{Binding ThermalValue, StringFormat='{0:F2}'}" Style="{StaticResource GaugeValue}" />
-                        <Label Text="{Binding ThermalUnit}"    Style="{StaticResource GaugeUnit}" />
-                        <ProgressBar Progress="{Binding ThermalNormalized}"
-                                     ProgressColor="{Binding ThermalStatus, Converter={StaticResource StatusColorConverter}}"
-                                     Style="{StaticResource GaugeBar}" />
-                        <Label Text="{Binding ThermalStatus, Converter={StaticResource StatusTextConverter}}"
-                               TextColor="{Binding ThermalStatus, Converter={StaticResource StatusColorConverter}}"
-                               Style="{StaticResource GaugeStatus}" />
-                    </StackLayout>
-                </Border>
+                    <!-- C3: Geomagnetic gauge -->
+                    <Border Grid.Column="2" Style="{StaticResource PanelBorder}">
+                        <StackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="ГЕОМАГН. ПОЛЕ"   Style="{StaticResource GaugeName}" />
+                            <Label Text="{Binding GeomagneticValue, StringFormat='{0:F0}'}" Style="{StaticResource GaugeValue}" />
+                            <Label Text="{Binding GeomagneticUnit}" Style="{StaticResource GaugeUnit}" />
+                            <Grid WidthRequest="40" HeightRequest="120" HorizontalOptions="Center">
+                                <BoxView Color="{Binding GeomagneticStatus, Converter={StaticResource StatusColorConverter}}"
+                                         WidthRequest="24"
+                                         HeightRequest="{Binding GeomagneticNormalized, Converter={StaticResource NormalizedToHeightConverter}, ConverterParameter=120}"
+                                         VerticalOptions="End" HorizontalOptions="Center" />
+                            </Grid>
+                            <Label Text="{Binding GeomagneticStatus, Converter={StaticResource StatusTextConverter}}"
+                                   TextColor="{Binding GeomagneticStatus, Converter={StaticResource StatusColorConverter}}"
+                                   Style="{StaticResource GaugeStatus}" />
+                        </StackLayout>
+                    </Border>
+
+                    <!-- C4: Thermal gauge -->
+                    <Border Grid.Column="3" Style="{StaticResource PanelBorder}">
+                        <StackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="ТЕПЛ. АНОМ."     Style="{StaticResource GaugeName}" />
+                            <Label Text="{Binding ThermalValue, StringFormat='{0:F2}'}" Style="{StaticResource GaugeValue}" />
+                            <Label Text="{Binding ThermalUnit}"    Style="{StaticResource GaugeUnit}" />
+                            <Grid WidthRequest="40" HeightRequest="120" HorizontalOptions="Center">
+                                <BoxView Color="{Binding ThermalStatus, Converter={StaticResource StatusColorConverter}}"
+                                         WidthRequest="24"
+                                         HeightRequest="{Binding ThermalNormalized, Converter={StaticResource NormalizedToHeightConverter}, ConverterParameter=120}"
+                                         VerticalOptions="End" HorizontalOptions="Center" />
+                            </Grid>
+                            <Label Text="{Binding ThermalStatus, Converter={StaticResource StatusTextConverter}}"
+                                   TextColor="{Binding ThermalStatus, Converter={StaticResource StatusColorConverter}}"
+                                   Style="{StaticResource GaugeStatus}" />
+                        </StackLayout>
+                    </Border>
+
+                </Grid>
 
             </Grid>
 
@@ -205,7 +225,7 @@
                         <Grid ColumnDefinitions="Auto, *" Padding="2">
                             <!-- LED indicator: green=АКТИВ, amber=ПАССИВ -->
                             <BoxView Grid.Column="0"
-                                     WidthRequest="10" HeightRequest="10" CornerRadius="5"
+                                     WidthRequest="10" HeightRequest="10" CornerRadius="0"
                                      VerticalOptions="Center" Margin="0,0,8,0"
                                      Color="{StaticResource StatusAmber}">
                                 <BoxView.Style>
@@ -235,39 +255,43 @@
                     <!-- Regulators section header -->
                     <Label Grid.Row="2" Text="РЕГУЛЯТОРЫ" Style="{StaticResource SectionHeader}" />
 
-                    <!-- Vertical sliders (T038): rotate horizontal Slider 270° -->
+                    <!-- Vertical sliders (T038): rotate horizontal Slider 270°, stretched to fill available height -->
                     <Grid Grid.Row="3" ColumnDefinitions="*, *" VerticalOptions="Fill">
 
                         <!-- Sensitivity column -->
-                        <StackLayout Grid.Column="0" Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
-                            <Label Text="{Binding Sensitivity, StringFormat='{0}%'}"
+                        <Grid Grid.Column="0" RowDefinitions="Auto, *, Auto" HorizontalOptions="Center" VerticalOptions="Fill">
+                            <Label Grid.Row="0" Text="{Binding Sensitivity, StringFormat='{0}%'}"
                                    Style="{StaticResource GaugeValue}" FontSize="13"/>
-                            <!-- Rotated slider: WidthRequest becomes visual height -->
-                            <Grid HeightRequest="190" WidthRequest="40">
-                                <Slider Minimum="0" Maximum="100"
+                            <!-- Rotated slider: WidthRequest becomes visual height, kept in sync with container height in code-behind -->
+                            <Grid Grid.Row="1" x:Name="SensitivitySliderContainer" WidthRequest="40"
+                                  HorizontalOptions="Center" VerticalOptions="Fill"
+                                  SizeChanged="OnVerticalSliderContainerSizeChanged">
+                                <Slider x:Name="SensitivitySlider"
+                                        Minimum="0" Maximum="100"
                                         Value="{Binding Sensitivity, Mode=TwoWay}"
                                         Rotation="270"
-                                        WidthRequest="180"
                                         VerticalOptions="Center"
                                         HorizontalOptions="Center" />
                             </Grid>
-                            <Label Text="ЧУВСТВ." Style="{StaticResource GaugeName}"/>
-                        </StackLayout>
+                            <Label Grid.Row="2" Text="ЧУВСТВ." Style="{StaticResource GaugeName}"/>
+                        </Grid>
 
                         <!-- Noise suppression column -->
-                        <StackLayout Grid.Column="1" Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
-                            <Label Text="{Binding NoiseSuppression, StringFormat='{0}%'}"
+                        <Grid Grid.Column="1" RowDefinitions="Auto, *, Auto" HorizontalOptions="Center" VerticalOptions="Fill">
+                            <Label Grid.Row="0" Text="{Binding NoiseSuppression, StringFormat='{0}%'}"
                                    Style="{StaticResource GaugeValue}" FontSize="13"/>
-                            <Grid HeightRequest="190" WidthRequest="40">
-                                <Slider Minimum="0" Maximum="100"
+                            <Grid Grid.Row="1" x:Name="NoiseSuppressionSliderContainer" WidthRequest="40"
+                                  HorizontalOptions="Center" VerticalOptions="Fill"
+                                  SizeChanged="OnVerticalSliderContainerSizeChanged">
+                                <Slider x:Name="NoiseSuppressionSlider"
+                                        Minimum="0" Maximum="100"
                                         Value="{Binding NoiseSuppression, Mode=TwoWay}"
                                         Rotation="270"
-                                        WidthRequest="180"
                                         VerticalOptions="Center"
                                         HorizontalOptions="Center" />
                             </Grid>
-                            <Label Text="ПОМЕХИ" Style="{StaticResource GaugeName}"/>
-                        </StackLayout>
+                            <Label Grid.Row="2" Text="ПОМЕХИ" Style="{StaticResource GaugeName}"/>
+                        </Grid>
 
                     </Grid>
 

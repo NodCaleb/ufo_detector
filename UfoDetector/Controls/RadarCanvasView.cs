@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using SkiaSharp;
 using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
@@ -56,11 +57,22 @@ public class RadarCanvasView : SKGLView
 
     // Seconds until intensity decays to zero after a sweep pass
     private const float IntensityDecayTime = 3.0f;
-    // Frame time estimate at 60 fps
-    private const float FrameTime = 1f / 60f;
+    // Full sweep rotation period
+    private const float RotationPeriodSeconds = 5.0f;
+    private const float AngularSpeed = MathF.Tau / RotationPeriodSeconds;
+    // Raw per-frame dt is smoothed (EMA) rather than clamped-and-dropped: a human eye
+    // is very sensitive to velocity jitter on a single rotating line, so absorbing a
+    // hitch gradually over the next several frames looks far smoother than either
+    // snapping forward to catch up or abruptly slowing down for one frame.
+    private const float DtSmoothingFactor = 0.15f;
+    // Still bounds truly extreme pauses (e.g. app backgrounded) to a sane ceiling
+    private const float MaxRawFrameDelta = 1f;
 
     // ── State ────────────────────────────────────────────────────────────────
-    private float _sweepAngle; // radians, advanced per frame
+    private readonly Stopwatch _clock = Stopwatch.StartNew();
+    private double _lastFrameSeconds;
+    private float _smoothedDt = -1f;
+    private float _sweepAngle; // radians, advanced by elapsed time
     private float _prevSweepAngle;
 
     // Active blips managed internally (populated from RadarBlipTemplate)
@@ -161,9 +173,19 @@ public class RadarCanvasView : SKGLView
         float cy = h * 0.5f;
         float r  = MathF.Min(cx, cy) - 4f;
 
+        double nowSeconds = _clock.Elapsed.TotalSeconds;
+        float rawDt = _lastFrameSeconds == 0
+            ? 0f
+            : MathF.Min((float)(nowSeconds - _lastFrameSeconds), MaxRawFrameDelta);
+        _lastFrameSeconds = nowSeconds;
+
+        // EMA smoothing: a hitch's lost time gets absorbed gradually over the next
+        // several frames instead of causing one visible velocity jump
+        _smoothedDt = _smoothedDt < 0f ? rawDt : _smoothedDt + (rawDt - _smoothedDt) * DtSmoothingFactor;
+        float dt = _smoothedDt;
+
         _prevSweepAngle = _sweepAngle;
-        // Advance sweep: ~1 full rotation every 3 s at 60 fps (~0.035 rad/frame)
-        _sweepAngle = (_sweepAngle + 0.035f) % MathF.Tau;
+        _sweepAngle = (_sweepAngle + AngularSpeed * dt) % MathF.Tau;
 
         // Background
         canvas.DrawRect(0, 0, w, h, _bgPaint);
@@ -190,18 +212,18 @@ public class RadarCanvasView : SKGLView
         {
             var blip = blips[i];
 
-            // Apply per-frame drift (fixed blips skip)
+            // Apply drift scaled by elapsed time (fixed blips skip)
             if (blip.DriftAngularSpeed != 0.0 || blip.DriftRadialSpeed != 0.0)
             {
-                blip.Angle    = (blip.Angle + blip.DriftAngularSpeed * FrameTime) % Math.Tau;
-                blip.Distance = Math.Clamp(blip.Distance + blip.DriftRadialSpeed * FrameTime, 0.0, 1.0);
+                blip.Angle    = (blip.Angle + blip.DriftAngularSpeed * dt) % Math.Tau;
+                blip.Distance = Math.Clamp(blip.Distance + blip.DriftRadialSpeed * dt, 0.0, 1.0);
             }
 
             // Detect if sweep just crossed this blip's angle
             if (SweepCrossed(_prevSweepAngle, _sweepAngle, (float)blip.Angle))
                 blip.Intensity = 1.0;
             else
-                blip.Intensity = Math.Max(0.0, blip.Intensity - FrameTime / IntensityDecayTime);
+                blip.Intensity = Math.Max(0.0, blip.Intensity - dt / IntensityDecayTime);
 
             if (blip.Intensity < 0.01)
                 continue;

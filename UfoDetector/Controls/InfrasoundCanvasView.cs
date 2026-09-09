@@ -50,7 +50,10 @@ public class InfrasoundCanvasView : SKGLView
 
     public InfrasoundCanvasView()
     {
-        HasRenderLoop = true;
+        // No continuous render loop needed: bars only change when Bands is set (10 Hz tick),
+        // which already calls InvalidateSurface(). A second always-on GL loop next to the
+        // radar's would double concurrent GPU work and starve both on low-power hardware.
+        HasRenderLoop = false;
 
         // Dashed threshold line — PathEffect allocated once, never inside PaintSurface
         _thresholdPaint = new SKPaint

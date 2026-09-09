@@ -82,8 +82,10 @@ public class DetectorViewModelTests
         tickMock.Setup(t => t.NeutronValue).Returns(newNeutron);
         tickMock.Setup(t => t.NeutronStatus).Returns(SensorStatus.Normal);
 
-        // Fire the Ticked event
-        tickMock.Raise(t => t.Ticked += null, EventArgs.Empty);
+        // Gauges refresh on-screen slower than the raw sim tick (plan.md: display
+        // update at 1-2s); fire enough ticks to guarantee at least one refresh
+        for (int i = 0; i < 20; i++)
+            tickMock.Raise(t => t.Ticked += null, EventArgs.Empty);
 
         Assert.Equal(newNeutron, vm.NeutronValue);
     }
