@@ -255,24 +255,18 @@
                     <!-- Regulators section header -->
                     <Label Grid.Row="2" Text="РЕГУЛЯТОРЫ" Style="{StaticResource SectionHeader}" />
 
-                    <!-- Vertical sliders (T038): rotate horizontal Slider 270°, stretched to fill available height -->
+                    <!-- Vertical sliders (T038): custom SkiaSharp bar sliders (rectangular thumb, fixed 16px track) -->
                     <Grid Grid.Row="3" ColumnDefinitions="*, *" VerticalOptions="Fill">
 
                         <!-- Sensitivity column -->
                         <Grid Grid.Column="0" RowDefinitions="Auto, *, Auto" HorizontalOptions="Center" VerticalOptions="Fill">
                             <Label Grid.Row="0" Text="{Binding Sensitivity, StringFormat='{0}%'}"
                                    Style="{StaticResource GaugeValue}" FontSize="13"/>
-                            <!-- Rotated slider: WidthRequest becomes visual height, kept in sync with container height in code-behind -->
-                            <Grid Grid.Row="1" x:Name="SensitivitySliderContainer" WidthRequest="40"
-                                  HorizontalOptions="Center" VerticalOptions="Fill"
-                                  SizeChanged="OnVerticalSliderContainerSizeChanged">
-                                <Slider x:Name="SensitivitySlider"
-                                        Minimum="0" Maximum="100"
-                                        Value="{Binding Sensitivity, Mode=TwoWay}"
-                                        Rotation="270"
-                                        VerticalOptions="Center"
-                                        HorizontalOptions="Center" />
-                            </Grid>
+                            <controls:VerticalBarSliderView Grid.Row="1"
+                                    Minimum="0" Maximum="100" BarWidth="16"
+                                    Value="{Binding Sensitivity, Mode=TwoWay}"
+                                    WidthRequest="40"
+                                    HorizontalOptions="Center" VerticalOptions="Fill" />
                             <Label Grid.Row="2" Text="ЧУВСТВ." Style="{StaticResource GaugeName}"/>
                         </Grid>
 
@@ -280,16 +274,11 @@
                         <Grid Grid.Column="1" RowDefinitions="Auto, *, Auto" HorizontalOptions="Center" VerticalOptions="Fill">
                             <Label Grid.Row="0" Text="{Binding NoiseSuppression, StringFormat='{0}%'}"
                                    Style="{StaticResource GaugeValue}" FontSize="13"/>
-                            <Grid Grid.Row="1" x:Name="NoiseSuppressionSliderContainer" WidthRequest="40"
-                                  HorizontalOptions="Center" VerticalOptions="Fill"
-                                  SizeChanged="OnVerticalSliderContainerSizeChanged">
-                                <Slider x:Name="NoiseSuppressionSlider"
-                                        Minimum="0" Maximum="100"
-                                        Value="{Binding NoiseSuppression, Mode=TwoWay}"
-                                        Rotation="270"
-                                        VerticalOptions="Center"
-                                        HorizontalOptions="Center" />
-                            </Grid>
+                            <controls:VerticalBarSliderView Grid.Row="1"
+                                    Minimum="0" Maximum="100" BarWidth="16"
+                                    Value="{Binding NoiseSuppression, Mode=TwoWay}"
+                                    WidthRequest="40"
+                                    HorizontalOptions="Center" VerticalOptions="Fill" />
                             <Label Grid.Row="2" Text="ПОМЕХИ" Style="{StaticResource GaugeName}"/>
                         </Grid>
 
