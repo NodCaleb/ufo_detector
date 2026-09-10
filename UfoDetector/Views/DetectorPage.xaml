@@ -27,34 +27,38 @@
         <!-- Sensor name label -->
         <Style x:Key="GaugeName" TargetType="Label">
             <Setter Property="FontFamily"   Value="ShareTechMono" />
-            <Setter Property="FontSize"     Value="9" />
+            <Setter Property="FontSize"     Value="20" />
             <Setter Property="TextColor"    Value="#2A6640" />
             <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="Margin"       Value="8" />
         </Style>
 
         <!-- Numeric value label -->
         <Style x:Key="GaugeValue" TargetType="Label">
             <Setter Property="FontFamily"   Value="ShareTechMono" />
-            <Setter Property="FontSize"     Value="18" />
+            <Setter Property="FontSize"     Value="20" />
             <Setter Property="TextColor"    Value="{StaticResource PhosphorGreen}" />
             <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="Margin"       Value="8" />
         </Style>
 
         <!-- Unit label -->
         <Style x:Key="GaugeUnit" TargetType="Label">
             <Setter Property="FontFamily"   Value="ShareTechMono" />
-            <Setter Property="FontSize"     Value="9" />
+            <Setter Property="FontSize"     Value="20" />
             <Setter Property="TextColor"    Value="#7DFF9A" />
             <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="Margin"       Value="8" />
         </Style>
 
         <!-- Status label (НОРМА / ПОВЫШЕН / …) -->
         <Style x:Key="GaugeStatus" TargetType="Label">
             <Setter Property="FontFamily"   Value="ShareTechMono" />
-            <Setter Property="FontSize"     Value="10" />
+            <Setter Property="FontSize"     Value="20" />
             <Setter Property="FontAttributes" Value="Bold" />
             <Setter Property="TextColor"    Value="{StaticResource PhosphorGreen}" />
             <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="Margin"       Value="8" />
         </Style>
 
         <!-- Fill bar -->
@@ -67,9 +71,9 @@
         <!-- Section header -->
         <Style x:Key="SectionHeader" TargetType="Label">
             <Setter Property="FontFamily"     Value="ShareTechMono" />
-            <Setter Property="FontSize"       Value="9" />
+            <Setter Property="FontSize"       Value="20" />
             <Setter Property="TextColor"      Value="#2A6640" />
-            <Setter Property="Margin"         Value="4,4,4,0" />
+            <Setter Property="Margin"         Value="8" />
         </Style>
     </ContentPage.Resources>
 
@@ -80,12 +84,12 @@
         <Border Grid.Row="0" Style="{StaticResource PanelBorder}" Margin="2,2,2,0">
             <Grid ColumnDefinitions="*, Auto">
                 <Label Text="АЯ-ДЕТЕКТОР"
-                       FontFamily="ShareTechMono" FontSize="14" FontAttributes="Bold"
-                       TextColor="{StaticResource PhosphorGreen}" VerticalOptions="Center" />
+                       FontFamily="ShareTechMono" FontSize="20" FontAttributes="Bold"
+                       TextColor="{StaticResource PhosphorGreen}" VerticalOptions="Center" Margin="8" />
                 <Label Grid.Column="1"
                        Text="СИСТЕМА МОНИТОРИНГА АНОМАЛИЙ"
-                       FontFamily="ShareTechMono" FontSize="9"
-                       TextColor="#2A6640" VerticalOptions="Center" />
+                       FontFamily="ShareTechMono" FontSize="20"
+                       TextColor="#2A6640" VerticalOptions="Center" Margin="8" />
             </Grid>
         </Border>
 
@@ -97,40 +101,42 @@
 
                 <!-- Radar -->
                 <Border Grid.Row="0" Style="{StaticResource PanelBorder}">
-                    <Grid ColumnDefinitions="*, Auto">
-                        <controls:RadarCanvasView Grid.Column="0"
-                            HeightRequest="260" WidthRequest="260"
-                            HorizontalOptions="Start"
+                    <Grid RowDefinitions="Auto, *, Auto">
+                        <Label Grid.Row="0" Text="РАДАРНЫЙ МОДУЛЬ" Style="{StaticResource SectionHeader}" HorizontalOptions="Center" />
+
+                        <controls:RadarCanvasView Grid.Row="1"
+                            HeightRequest="600" WidthRequest="600"
+                            HorizontalOptions="Center" VerticalOptions="Center"
                             ActiveAnomaly="{Binding ActiveAnomaly}"
                             Phase="{Binding Phase}" />
+
                         <!-- Blip legend -->
-                        <StackLayout Grid.Column="1" Spacing="4" Padding="8,4" VerticalOptions="Center">
-                            <Label Text="РАДАРНЫЙ МОДУЛЬ" Style="{StaticResource SectionHeader}" />
-                            <StackLayout Orientation="Horizontal" Spacing="4">
+                        <FlexLayout Grid.Row="2" Wrap="Wrap" JustifyContent="Center" Direction="Row" Padding="4,4,4,2">
+                            <StackLayout Orientation="Horizontal" Spacing="4" Margin="6,2">
                                 <BoxView Color="#39FF14" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
-                                <Label Text="ЭМ" FontFamily="ShareTechMono" FontSize="9" TextColor="#39FF14" VerticalOptions="Center"/>
+                                <Label Text="ЭМ-аномалия" FontFamily="ShareTechMono" FontSize="20" TextColor="#39FF14" VerticalOptions="Center" Margin="8"/>
                             </StackLayout>
-                            <StackLayout Orientation="Horizontal" Spacing="4">
+                            <StackLayout Orientation="Horizontal" Spacing="4" Margin="6,2">
                                 <BoxView Color="#FFB300" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
-                                <Label Text="ИЗЛУЧЕНИЕ" FontFamily="ShareTechMono" FontSize="9" TextColor="#FFB300" VerticalOptions="Center"/>
+                                <Label Text="Излучение" FontFamily="ShareTechMono" FontSize="20" TextColor="#FFB300" VerticalOptions="Center" Margin="8"/>
                             </StackLayout>
-                            <StackLayout Orientation="Horizontal" Spacing="4">
+                            <StackLayout Orientation="Horizontal" Spacing="4" Margin="6,2">
                                 <BoxView Color="#44AAFF" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
-                                <Label Text="ИОНИЗАЦИЯ" FontFamily="ShareTechMono" FontSize="9" TextColor="#44AAFF" VerticalOptions="Center"/>
+                                <Label Text="Ионизация" FontFamily="ShareTechMono" FontSize="20" TextColor="#44AAFF" VerticalOptions="Center" Margin="8"/>
                             </StackLayout>
-                            <StackLayout Orientation="Horizontal" Spacing="4">
+                            <StackLayout Orientation="Horizontal" Spacing="4" Margin="6,2">
                                 <BoxView Color="#FF6600" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
-                                <Label Text="ТЕПЛОВОЙ" FontFamily="ShareTechMono" FontSize="9" TextColor="#FF6600" VerticalOptions="Center"/>
+                                <Label Text="Тепловой источник" FontFamily="ShareTechMono" FontSize="20" TextColor="#FF6600" VerticalOptions="Center" Margin="8"/>
                             </StackLayout>
-                            <StackLayout Orientation="Horizontal" Spacing="4">
+                            <StackLayout Orientation="Horizontal" Spacing="4" Margin="6,2">
                                 <BoxView Color="#00DDCC" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
-                                <Label Text="ГЕОМАГН." FontFamily="ShareTechMono" FontSize="9" TextColor="#00DDCC" VerticalOptions="Center"/>
+                                <Label Text="Геомагнитное возмущение" FontFamily="ShareTechMono" FontSize="20" TextColor="#00DDCC" VerticalOptions="Center" Margin="8"/>
                             </StackLayout>
-                            <StackLayout Orientation="Horizontal" Spacing="4">
+                            <StackLayout Orientation="Horizontal" Spacing="4" Margin="6,2">
                                 <BoxView Color="#CC44FF" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
-                                <Label Text="ХРОНО" FontFamily="ShareTechMono" FontSize="9" TextColor="#CC44FF" VerticalOptions="Center"/>
+                                <Label Text="Хронопертурбация" FontFamily="ShareTechMono" FontSize="20" TextColor="#CC44FF" VerticalOptions="Center" Margin="8"/>
                             </StackLayout>
-                        </StackLayout>
+                        </FlexLayout>
                     </Grid>
                 </Border>
 
@@ -243,7 +249,7 @@
                             <Button Grid.Column="1"
                                     Text="{Binding ModeLabel}"
                                     Command="{Binding ToggleModeCommand}"
-                                    FontFamily="ShareTechMono" FontSize="12"
+                                    FontFamily="ShareTechMono" FontSize="20"
                                     BackgroundColor="Transparent"
                                     BorderColor="{StaticResource PhosphorGreenDim}"
                                     BorderWidth="1"
@@ -261,7 +267,7 @@
                         <!-- Sensitivity column -->
                         <Grid Grid.Column="0" RowDefinitions="Auto, *, Auto" HorizontalOptions="Center" VerticalOptions="Fill">
                             <Label Grid.Row="0" Text="{Binding Sensitivity, StringFormat='{0}%'}"
-                                   Style="{StaticResource GaugeValue}" FontSize="13"/>
+                                   Style="{StaticResource GaugeValue}" FontSize="20"/>
                             <controls:VerticalBarSliderView Grid.Row="1"
                                     Minimum="0" Maximum="100" BarWidth="16"
                                     Value="{Binding Sensitivity, Mode=TwoWay}"
@@ -273,7 +279,7 @@
                         <!-- Noise suppression column -->
                         <Grid Grid.Column="1" RowDefinitions="Auto, *, Auto" HorizontalOptions="Center" VerticalOptions="Fill">
                             <Label Grid.Row="0" Text="{Binding NoiseSuppression, StringFormat='{0}%'}"
-                                   Style="{StaticResource GaugeValue}" FontSize="13"/>
+                                   Style="{StaticResource GaugeValue}" FontSize="20"/>
                             <controls:VerticalBarSliderView Grid.Row="1"
                                     Minimum="0" Maximum="100" BarWidth="16"
                                     Value="{Binding NoiseSuppression, Mode=TwoWay}"
@@ -293,11 +299,11 @@
         <Border Grid.Row="2" Style="{StaticResource PanelBorder}">
             <Grid ColumnDefinitions="Auto, *, Auto, Auto" RowDefinitions="Auto">
                 <Label Text="ХРОНОАНОМАЛИЯ"
-                       FontFamily="ShareTechMono" FontSize="10" TextColor="#2A6640"
-                       VerticalOptions="Center" Margin="0,0,12,0" />
+                       FontFamily="ShareTechMono" FontSize="20" TextColor="#2A6640"
+                       VerticalOptions="Center" Margin="8,8,12,8" />
                 <Label Grid.Column="1"
                        Text="{Binding ChronoValue, StringFormat='Δt {0:F4}с'}"
-                       Style="{StaticResource GaugeValue}" FontSize="14"
+                       Style="{StaticResource GaugeValue}" FontSize="20"
                        VerticalOptions="Center" />
                 <ProgressBar Grid.Column="2"
                              Progress="{Binding ChronoNormalized}"
@@ -307,7 +313,7 @@
                 <Label Grid.Column="3"
                        Text="{Binding ChronoStatus, Converter={StaticResource StatusTextConverter}}"
                        TextColor="{Binding ChronoStatus, Converter={StaticResource StatusColorConverter}}"
-                       Style="{StaticResource GaugeStatus}" FontSize="10"
+                       Style="{StaticResource GaugeStatus}" FontSize="20"
                        VerticalOptions="Center" />
             </Grid>
         </Border>
@@ -316,10 +322,10 @@
         <Border Grid.Row="3" Style="{StaticResource PanelBorder}"
                 IsVisible="False">
             <Label Text="{Binding Narrative}"
-                   FontFamily="ShareTechMono" FontSize="10"
+                   FontFamily="ShareTechMono" FontSize="20"
                    TextColor="{StaticResource PhosphorGreenDim}"
                    LineBreakMode="WordWrap"
-                   Margin="4,2" />
+                   Margin="8" />
         </Border>
 
         <!-- ── F: Infrasound spectrum ─────────────────────────────────────── -->
