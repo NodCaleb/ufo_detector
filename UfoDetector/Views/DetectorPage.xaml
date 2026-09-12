@@ -20,7 +20,7 @@
             <Setter Property="StrokeThickness" Value="1" />
             <Setter Property="Padding"         Value="6" />
             <Setter Property="Margin"          Value="2" />
-            <Setter Property="BackgroundColor" Value="#060F08" />
+            <!-- <Setter Property="BackgroundColor" Value="#060F08" /> -->
             <Setter Property="StrokeShape"     Value="Rectangle" />
         </Style>
 
@@ -77,11 +77,18 @@
         </Style>
     </ContentPage.Resources>
 
-    <!-- Root: header + body -->
+    <!-- Root: background image behind header + body -->
+    <Grid>
+
+        <Image Source="background.jpg"
+               Aspect="AspectFill"
+               HorizontalOptions="Fill"
+               VerticalOptions="Fill" />
+
     <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
 
         <!-- ── A: Header ──────────────────────────────────────────────────── -->
-        <Border Grid.Row="0" Style="{StaticResource PanelBorder}" Margin="2,2,2,0">
+        <!-- <Border Grid.Row="0" Style="{StaticResource PanelBorder}" Margin="2,2,2,0">
             <Grid ColumnDefinitions="*, Auto">
                 <Label Text="АЯ-ДЕТЕКТОР"
                        FontFamily="ShareTechMono" FontSize="20" FontAttributes="Bold"
@@ -91,7 +98,7 @@
                        FontFamily="ShareTechMono" FontSize="20"
                        TextColor="#2A6640" VerticalOptions="Center" Margin="8" />
             </Grid>
-        </Border>
+        </Border> -->
 
         <!-- ── B + C: Radar left, Controls right ─────────────────────────── -->
         <Grid Grid.Row="1" ColumnDefinitions="*, 220">
@@ -102,16 +109,19 @@
                 <!-- Radar -->
                 <Border Grid.Row="0" Style="{StaticResource PanelBorder}">
                     <Grid RowDefinitions="Auto, *, Auto">
-                        <Label Grid.Row="0" Text="РАДАРНЫЙ МОДУЛЬ" Style="{StaticResource SectionHeader}" HorizontalOptions="Center" />
+                        <!-- <Label Grid.Row="0" Text="РАДАРНЫЙ МОДУЛЬ" Style="{StaticResource SectionHeader}" HorizontalOptions="Center" /> -->
 
-                        <controls:RadarCanvasView Grid.Row="1"
-                            HeightRequest="600" WidthRequest="600"
-                            HorizontalOptions="Center" VerticalOptions="Center"
-                            ActiveAnomaly="{Binding ActiveAnomaly}"
-                            Phase="{Binding Phase}" />
+                        <!-- AbsoluteLayout gives pixel-style X/Y placement; LayoutBounds = x, y, width, height in DIPs -->
+                        <AbsoluteLayout Grid.Row="1">
+                            <controls:RadarCanvasView
+                                AbsoluteLayout.LayoutFlags="None"
+                                AbsoluteLayout.LayoutBounds="85, 160, 475, 475"
+                                ActiveAnomaly="{Binding ActiveAnomaly}"
+                                Phase="{Binding Phase}" />
+                        </AbsoluteLayout>
 
                         <!-- Blip legend -->
-                        <FlexLayout Grid.Row="2" Wrap="Wrap" JustifyContent="Center" Direction="Row" Padding="4,4,4,2">
+                        <!-- <FlexLayout Grid.Row="2" Wrap="Wrap" JustifyContent="Center" Direction="Row" Padding="4,4,4,2">
                             <StackLayout Orientation="Horizontal" Spacing="4" Margin="6,2">
                                 <BoxView Color="#39FF14" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
                                 <Label Text="ЭМ-аномалия" FontFamily="ShareTechMono" FontSize="20" TextColor="#39FF14" VerticalOptions="Center" Margin="8"/>
@@ -136,7 +146,7 @@
                                 <BoxView Color="#CC44FF" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
                                 <Label Text="Хронопертурбация" FontFamily="ShareTechMono" FontSize="20" TextColor="#CC44FF" VerticalOptions="Center" Margin="8"/>
                             </StackLayout>
-                        </FlexLayout>
+                        </FlexLayout> -->
                     </Grid>
                 </Border>
 
@@ -339,5 +349,6 @@
             </StackLayout>
         </Border>
 
+    </Grid>
     </Grid>
 </ContentPage>

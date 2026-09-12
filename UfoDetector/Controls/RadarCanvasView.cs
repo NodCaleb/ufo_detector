@@ -11,12 +11,6 @@ namespace UfoDetector.Controls;
 public class RadarCanvasView : SKGLView
 {
     // ── Pre-allocated paints (no new() inside OnPaintSurface) ───────────────
-    private readonly SKPaint _bgPaint = new()
-    {
-        Color = new SKColor(6, 12, 6),
-        Style = SKPaintStyle.Fill,
-    };
-
     private readonly SKPaint _ringPaint = new()
     {
         Color = new SKColor(57, 255, 20, 50),
@@ -187,8 +181,8 @@ public class RadarCanvasView : SKGLView
         _prevSweepAngle = _sweepAngle;
         _sweepAngle = (_sweepAngle + AngularSpeed * dt) % MathF.Tau;
 
-        // Background
-        canvas.DrawRect(0, 0, w, h, _bgPaint);
+        // Transparent clear each frame (no opaque fill) so only lines/dots are visible
+        canvas.Clear(SKColors.Transparent);
 
         // Cross-hairs
         canvas.DrawLine(cx, cy - r, cx, cy + r, _crosshairPaint);

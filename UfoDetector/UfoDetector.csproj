@@ -33,6 +33,8 @@
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
 		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
+		<!-- Full-bleed background: keep source resolution as-is, Image control scales it at runtime -->
+		<MauiImage Update="Resources\Images\background.png" Resize="False" />
 		
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
