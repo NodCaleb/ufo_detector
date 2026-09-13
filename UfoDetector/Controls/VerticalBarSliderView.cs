@@ -74,7 +74,7 @@ public class VerticalBarSliderView : SKCanvasView
         Style = SKPaintStyle.Fill,
     };
 
-    private double _panStartValue;
+    private double _lastTotalY;
 
     public VerticalBarSliderView()
     {
@@ -95,14 +95,16 @@ public class VerticalBarSliderView : SKCanvasView
         switch (e.StatusType)
         {
             case GestureStatus.Started:
-                _panStartValue = Value;
+                _lastTotalY = 0;
                 break;
 
             case GestureStatus.Running:
-                // Dragging up (negative Y) increases the value, matching a physical vertical slider.
+                // Delta since the last update (not since gesture start) so that overshoot past
+                // Minimum/Maximum is dropped instead of accumulating as slack that must be undone.
                 double range = Maximum - Minimum;
-                double deltaValue = -e.TotalY / Height * range;
-                Value = Math.Clamp(_panStartValue + deltaValue, Minimum, Maximum);
+                double deltaValue = -(e.TotalY - _lastTotalY) / Height * range;
+                _lastTotalY = e.TotalY;
+                Value = Math.Clamp(Value + deltaValue, Minimum, Maximum);
                 break;
         }
     }

@@ -128,10 +128,10 @@ public partial class DetectorViewModel : ObservableObject
         InfrasoundBands = new double[20];
         Array.Fill(InfrasoundBands, 0.05);
 
-        // Controls — restore persisted values; init flag prevents writing them back
+        // Controls — always start at 50 regardless of any previously persisted value
         Mode             = DetectorMode.Passive;
-        Sensitivity      = _preferences.Get(PrefKeySensitivity,      50, null);
-        NoiseSuppression = _preferences.Get(PrefKeyNoiseSuppression, 50, null);
+        Sensitivity      = 50;
+        NoiseSuppression = 50;
 
         _isInitializing = false;
 
