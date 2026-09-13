@@ -172,10 +172,17 @@
             <!-- C: Chrono anomaly row ──────────────────────────────────────── -->
             <Grid Grid.Row="2" ColumnDefinitions="Auto,*" RowDefinitions="Auto">
 
-                <Label Grid.Column="1"
-                   Text="{Binding ChronoValue, StringFormat='Δt {0:F4}с'}"
-                   Style="{StaticResource GaugeValue}" FontSize="20"
-                   VerticalOptions="Center" />
+                <AbsoluteLayout Grid.Column="1">
+                    <Label Text="{Binding ChronoValue, StringFormat='Δt {0:F4}с'}"
+                           Style="{StaticResource GaugeValue}" FontSize="28"
+                           AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="350, 26, 200, 40" />
+                    <Image Source="{Binding ChronoStatus, Converter={StaticResource StatusLedConverter}, ConverterParameter=Left}"
+                           WidthRequest="48" HeightRequest="48"
+                           AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="760, 26, 48, 48" />
+                    <Image Source="{Binding ChronoStatus, Converter={StaticResource StatusLedConverter}, ConverterParameter=Right}"
+                           WidthRequest="48" HeightRequest="48"
+                           AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="820, 26, 48, 48" />
+                </AbsoluteLayout>
             </Grid>
 
             <!-- D: Infrasound spectrum ─────────────────────────────────────── -->
