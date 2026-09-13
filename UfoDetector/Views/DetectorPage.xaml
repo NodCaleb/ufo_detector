@@ -12,6 +12,7 @@
     <ContentPage.Resources>
         <converters:SensorStatusToColorConverter x:Key="StatusColorConverter" />
         <converters:SensorStatusToTextConverter  x:Key="StatusTextConverter"  />
+        <converters:SensorStatusToLedImageConverter x:Key="StatusLedConverter" />
 
         <!-- Numeric value label -->
         <Style x:Key="GaugeValue" TargetType="Label">
@@ -120,6 +121,11 @@
                                AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="80, 75, 100, 40" />
                     <Label Text="{Binding NeutronUnit}" Style="{StaticResource GaugeUnit}"
                                AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="80, 110, 100, 40" />
+                    <HorizontalStackLayout Spacing="4"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="80, 200, 36, 16">
+                        <Image Source="{Binding NeutronStatus, Converter={StaticResource StatusLedConverter}, ConverterParameter=Left}" WidthRequest="48" HeightRequest="48" />
+                        <Image Source="{Binding NeutronStatus, Converter={StaticResource StatusLedConverter}, ConverterParameter=Right}" WidthRequest="48" HeightRequest="48" />
+                    </HorizontalStackLayout>
                 </AbsoluteLayout>
 
                 <!-- C2: Ionisation gauge -->
@@ -128,6 +134,11 @@
                                AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="75, 75, 100, 40" />
                     <Label Text="{Binding IonisationUnit}" Style="{StaticResource GaugeUnit}"
                                AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="75, 110, 100, 40" />
+                    <HorizontalStackLayout Spacing="4"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="75, 200, 36, 16">
+                        <Image Source="{Binding IonisationStatus, Converter={StaticResource StatusLedConverter}, ConverterParameter=Left}" WidthRequest="48" HeightRequest="48" />
+                        <Image Source="{Binding IonisationStatus, Converter={StaticResource StatusLedConverter}, ConverterParameter=Right}" WidthRequest="48" HeightRequest="48" />
+                    </HorizontalStackLayout>
                 </AbsoluteLayout>
 
                 <!-- C3: Geomagnetic gauge -->
@@ -136,6 +147,11 @@
                                AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="65, 75, 100, 40" />
                     <Label Text="{Binding GeomagneticUnit}" Style="{StaticResource GaugeUnit}"
                                AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="65, 110, 100, 40" />
+                    <HorizontalStackLayout Spacing="4"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="65, 200, 36, 16">
+                        <Image Source="{Binding GeomagneticStatus, Converter={StaticResource StatusLedConverter}, ConverterParameter=Left}" WidthRequest="48" HeightRequest="48" />
+                        <Image Source="{Binding GeomagneticStatus, Converter={StaticResource StatusLedConverter}, ConverterParameter=Right}" WidthRequest="48" HeightRequest="48" />
+                    </HorizontalStackLayout>
                 </AbsoluteLayout>
 
                 <!-- C4: Thermal gauge -->
@@ -144,6 +160,11 @@
                                AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="55, 75, 100, 40" />
                     <Label Text="{Binding ThermalUnit}" Style="{StaticResource GaugeUnit}"
                                AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="55, 110, 100, 40" />
+                    <HorizontalStackLayout Spacing="4"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="55, 200, 36, 16">
+                        <Image Source="{Binding ThermalStatus, Converter={StaticResource StatusLedConverter}, ConverterParameter=Left}" WidthRequest="48" HeightRequest="48" />
+                        <Image Source="{Binding ThermalStatus, Converter={StaticResource StatusLedConverter}, ConverterParameter=Right}" WidthRequest="48" HeightRequest="48" />
+                    </HorizontalStackLayout>
                 </AbsoluteLayout>
 
             </Grid>
