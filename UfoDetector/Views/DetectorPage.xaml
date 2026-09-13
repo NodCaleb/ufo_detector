@@ -12,17 +12,6 @@
     <ContentPage.Resources>
         <converters:SensorStatusToColorConverter x:Key="StatusColorConverter" />
         <converters:SensorStatusToTextConverter  x:Key="StatusTextConverter"  />
-        <converters:NormalizedToHeightConverter  x:Key="NormalizedToHeightConverter" />
-
-        <!-- Gauge panel border style -->
-        <Style x:Key="PanelBorder" TargetType="Border">
-            <Setter Property="Stroke"          Value="#1A3A20" />
-            <Setter Property="StrokeThickness" Value="1" />
-            <Setter Property="Padding"         Value="6" />
-            <Setter Property="Margin"          Value="2" />
-            <!-- <Setter Property="BackgroundColor" Value="#060F08" /> -->
-            <Setter Property="StrokeShape"     Value="Rectangle" />
-        </Style>
 
         <!-- Sensor name label -->
         <Style x:Key="GaugeName" TargetType="Label">
@@ -85,269 +74,143 @@
                HorizontalOptions="Fill"
                VerticalOptions="Fill" />
 
-    <Grid RowDefinitions="Auto, *, Auto, Auto, Auto">
-
-        <!-- ── A: Header ──────────────────────────────────────────────────── -->
-        <!-- <Border Grid.Row="0" Style="{StaticResource PanelBorder}" Margin="2,2,2,0">
-            <Grid ColumnDefinitions="*, Auto">
-                <Label Text="АЯ-ДЕТЕКТОР"
-                       FontFamily="ShareTechMono" FontSize="20" FontAttributes="Bold"
-                       TextColor="{StaticResource PhosphorGreen}" VerticalOptions="Center" Margin="8" />
-                <Label Grid.Column="1"
-                       Text="СИСТЕМА МОНИТОРИНГА АНОМАЛИЙ"
-                       FontFamily="ShareTechMono" FontSize="20"
-                       TextColor="#2A6640" VerticalOptions="Center" Margin="8" />
-            </Grid>
-        </Border> -->
+    <Grid RowDefinitions="Auto, Auto, *">
 
         <!-- ── B + C: Radar left, Controls right ─────────────────────────── -->
-        <Grid Grid.Row="1" ColumnDefinitions="*, 220">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *">
 
             <!-- Left column: Radar + 4 sensors -->
-            <Grid RowDefinitions="*, Auto">
+            <Grid RowDefinitions="Auto, *">
 
                 <!-- Radar -->
-                <Border Grid.Row="0" Style="{StaticResource PanelBorder}">
-                    <Grid RowDefinitions="Auto, *, Auto">
-                        <!-- <Label Grid.Row="0" Text="РАДАРНЫЙ МОДУЛЬ" Style="{StaticResource SectionHeader}" HorizontalOptions="Center" /> -->
-
-                        <!-- AbsoluteLayout gives pixel-style X/Y placement; LayoutBounds = x, y, width, height in DIPs -->
-                        <AbsoluteLayout Grid.Row="1">
-                            <controls:RadarCanvasView
-                                AbsoluteLayout.LayoutFlags="None"
-                                AbsoluteLayout.LayoutBounds="85, 160, 475, 475"
-                                ActiveAnomaly="{Binding ActiveAnomaly}"
-                                Phase="{Binding Phase}" />
-                        </AbsoluteLayout>
-
-                        <!-- Blip legend -->
-                        <!-- <FlexLayout Grid.Row="2" Wrap="Wrap" JustifyContent="Center" Direction="Row" Padding="4,4,4,2">
-                            <StackLayout Orientation="Horizontal" Spacing="4" Margin="6,2">
-                                <BoxView Color="#39FF14" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
-                                <Label Text="ЭМ-аномалия" FontFamily="ShareTechMono" FontSize="20" TextColor="#39FF14" VerticalOptions="Center" Margin="8"/>
-                            </StackLayout>
-                            <StackLayout Orientation="Horizontal" Spacing="4" Margin="6,2">
-                                <BoxView Color="#FFB300" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
-                                <Label Text="Излучение" FontFamily="ShareTechMono" FontSize="20" TextColor="#FFB300" VerticalOptions="Center" Margin="8"/>
-                            </StackLayout>
-                            <StackLayout Orientation="Horizontal" Spacing="4" Margin="6,2">
-                                <BoxView Color="#44AAFF" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
-                                <Label Text="Ионизация" FontFamily="ShareTechMono" FontSize="20" TextColor="#44AAFF" VerticalOptions="Center" Margin="8"/>
-                            </StackLayout>
-                            <StackLayout Orientation="Horizontal" Spacing="4" Margin="6,2">
-                                <BoxView Color="#FF6600" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
-                                <Label Text="Тепловой источник" FontFamily="ShareTechMono" FontSize="20" TextColor="#FF6600" VerticalOptions="Center" Margin="8"/>
-                            </StackLayout>
-                            <StackLayout Orientation="Horizontal" Spacing="4" Margin="6,2">
-                                <BoxView Color="#00DDCC" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
-                                <Label Text="Геомагнитное возмущение" FontFamily="ShareTechMono" FontSize="20" TextColor="#00DDCC" VerticalOptions="Center" Margin="8"/>
-                            </StackLayout>
-                            <StackLayout Orientation="Horizontal" Spacing="4" Margin="6,2">
-                                <BoxView Color="#CC44FF" WidthRequest="8" HeightRequest="8" CornerRadius="0" VerticalOptions="Center"/>
-                                <Label Text="Хронопертурбация" FontFamily="ShareTechMono" FontSize="20" TextColor="#CC44FF" VerticalOptions="Center" Margin="8"/>
-                            </StackLayout>
-                        </FlexLayout> -->
-                    </Grid>
-                </Border>
+                <Grid Grid.Row="0" RowDefinitions="Auto, *, Auto">
+                    <!-- AbsoluteLayout gives pixel-style X/Y placement; LayoutBounds = x, y, width, height in DIPs -->
+                    <AbsoluteLayout Grid.Row="1">
+                        <controls:RadarCanvasView
+                            AbsoluteLayout.LayoutFlags="None"
+                            AbsoluteLayout.LayoutBounds="95, 165, 475, 475"
+                            ActiveAnomaly="{Binding ActiveAnomaly}"
+                            Phase="{Binding Phase}" />
+                    </AbsoluteLayout>
+                </Grid>
 
                 <!-- C: sensor gauges — single row of 4 vertical meters -->
                 <Grid Grid.Row="1" ColumnDefinitions="*, *, *, *">
 
                     <!-- C1: Neutron gauge -->
-                    <Border Grid.Column="0" Style="{StaticResource PanelBorder}">
-                        <StackLayout Spacing="2" HorizontalOptions="Center">
-                            <Label Text="НЕЙТР. ИЗЛ."    Style="{StaticResource GaugeName}" />
-                            <Label Text="{Binding NeutronValue, StringFormat='{0:F1}'}" Style="{StaticResource GaugeValue}" />
-                            <Label Text="{Binding NeutronUnit}"     Style="{StaticResource GaugeUnit}" />
-                            <Grid WidthRequest="40" HeightRequest="120" HorizontalOptions="Center">
-                                <BoxView Color="{Binding NeutronStatus, Converter={StaticResource StatusColorConverter}}"
-                                         WidthRequest="24"
-                                         HeightRequest="{Binding NeutronNormalized, Converter={StaticResource NormalizedToHeightConverter}, ConverterParameter=120}"
-                                         VerticalOptions="End" HorizontalOptions="Center" />
-                            </Grid>
-                            <Label Text="{Binding NeutronStatus, Converter={StaticResource StatusTextConverter}}"
-                                   TextColor="{Binding NeutronStatus, Converter={StaticResource StatusColorConverter}}"
-                                   Style="{StaticResource GaugeStatus}" />
-                        </StackLayout>
-                    </Border>
+                    <AbsoluteLayout Grid.Column="0">
+                        <Label Text="{Binding NeutronValue, StringFormat='{0:F1}'}" Style="{StaticResource GaugeValue}"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="50, 0, 100, 30" />
+                        <Label Text="{Binding NeutronUnit}" Style="{StaticResource GaugeUnit}"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="50, 35, 100, 30" />
+                    </AbsoluteLayout>
 
                     <!-- C2: Ionisation gauge -->
-                    <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
-                        <StackLayout Spacing="2" HorizontalOptions="Center">
-                            <Label Text="ИОНИЗАЦИЯ"       Style="{StaticResource GaugeName}" />
-                            <Label Text="{Binding IonisationValue, StringFormat='{0:F0}'}" Style="{StaticResource GaugeValue}" />
-                            <Label Text="{Binding IonisationUnit}" Style="{StaticResource GaugeUnit}" />
-                            <Grid WidthRequest="40" HeightRequest="120" HorizontalOptions="Center">
-                                <BoxView Color="{Binding IonisationStatus, Converter={StaticResource StatusColorConverter}}"
-                                         WidthRequest="24"
-                                         HeightRequest="{Binding IonisationNormalized, Converter={StaticResource NormalizedToHeightConverter}, ConverterParameter=120}"
-                                         VerticalOptions="End" HorizontalOptions="Center" />
-                            </Grid>
-                            <Label Text="{Binding IonisationStatus, Converter={StaticResource StatusTextConverter}}"
-                                   TextColor="{Binding IonisationStatus, Converter={StaticResource StatusColorConverter}}"
-                                   Style="{StaticResource GaugeStatus}" />
-                        </StackLayout>
-                    </Border>
+                    <AbsoluteLayout Grid.Column="1">
+                        <Label Text="{Binding IonisationValue, StringFormat='{0:F0}'}" Style="{StaticResource GaugeValue}"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="0, 40, 100, 30" />
+                        <Label Text="{Binding IonisationUnit}" Style="{StaticResource GaugeUnit}"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="0, 75, 100, 30" />
+                    </AbsoluteLayout>
 
                     <!-- C3: Geomagnetic gauge -->
-                    <Border Grid.Column="2" Style="{StaticResource PanelBorder}">
-                        <StackLayout Spacing="2" HorizontalOptions="Center">
-                            <Label Text="ГЕОМАГН. ПОЛЕ"   Style="{StaticResource GaugeName}" />
-                            <Label Text="{Binding GeomagneticValue, StringFormat='{0:F0}'}" Style="{StaticResource GaugeValue}" />
-                            <Label Text="{Binding GeomagneticUnit}" Style="{StaticResource GaugeUnit}" />
-                            <Grid WidthRequest="40" HeightRequest="120" HorizontalOptions="Center">
-                                <BoxView Color="{Binding GeomagneticStatus, Converter={StaticResource StatusColorConverter}}"
-                                         WidthRequest="24"
-                                         HeightRequest="{Binding GeomagneticNormalized, Converter={StaticResource NormalizedToHeightConverter}, ConverterParameter=120}"
-                                         VerticalOptions="End" HorizontalOptions="Center" />
-                            </Grid>
-                            <Label Text="{Binding GeomagneticStatus, Converter={StaticResource StatusTextConverter}}"
-                                   TextColor="{Binding GeomagneticStatus, Converter={StaticResource StatusColorConverter}}"
-                                   Style="{StaticResource GaugeStatus}" />
-                        </StackLayout>
-                    </Border>
+                    <AbsoluteLayout Grid.Column="2">
+                        <Label Text="{Binding GeomagneticValue, StringFormat='{0:F0}'}" Style="{StaticResource GaugeValue}"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="0, 40, 100, 30" />
+                        <Label Text="{Binding GeomagneticUnit}" Style="{StaticResource GaugeUnit}"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="0, 75, 100, 30" />
+                    </AbsoluteLayout>
 
                     <!-- C4: Thermal gauge -->
-                    <Border Grid.Column="3" Style="{StaticResource PanelBorder}">
-                        <StackLayout Spacing="2" HorizontalOptions="Center">
-                            <Label Text="ТЕПЛ. АНОМ."     Style="{StaticResource GaugeName}" />
-                            <Label Text="{Binding ThermalValue, StringFormat='{0:F2}'}" Style="{StaticResource GaugeValue}" />
-                            <Label Text="{Binding ThermalUnit}"    Style="{StaticResource GaugeUnit}" />
-                            <Grid WidthRequest="40" HeightRequest="120" HorizontalOptions="Center">
-                                <BoxView Color="{Binding ThermalStatus, Converter={StaticResource StatusColorConverter}}"
-                                         WidthRequest="24"
-                                         HeightRequest="{Binding ThermalNormalized, Converter={StaticResource NormalizedToHeightConverter}, ConverterParameter=120}"
-                                         VerticalOptions="End" HorizontalOptions="Center" />
-                            </Grid>
-                            <Label Text="{Binding ThermalStatus, Converter={StaticResource StatusTextConverter}}"
-                                   TextColor="{Binding ThermalStatus, Converter={StaticResource StatusColorConverter}}"
-                                   Style="{StaticResource GaugeStatus}" />
-                        </StackLayout>
-                    </Border>
+                    <AbsoluteLayout Grid.Column="3">
+                        <Label Text="{Binding ThermalValue, StringFormat='{0:F2}'}" Style="{StaticResource GaugeValue}"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="0, 40, 100, 30" />
+                        <Label Text="{Binding ThermalUnit}" Style="{StaticResource GaugeUnit}"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="0, 75, 100, 30" />
+                    </AbsoluteLayout>
 
                 </Grid>
 
             </Grid>
 
             <!-- Right column: Controls panel -->
-            <Border Grid.Column="1" Style="{StaticResource PanelBorder}">
-                <Grid RowDefinitions="Auto, Auto, Auto, *, Auto, Auto">
+            <Grid Grid.Column="1" RowDefinitions="Auto, *">
 
-                    <!-- Mode section header -->
-                    <Label Grid.Row="0" Text="РЕЖИМ ПОИСКА" Style="{StaticResource SectionHeader}" />
-
-                    <!-- Mode toggle: LED + Button (T039) -->
-                    <Border Grid.Row="1" Style="{StaticResource PanelBorder}" Margin="2,2,2,6">
-                        <Grid ColumnDefinitions="Auto, *" Padding="2">
-                            <!-- LED indicator: green=АКТИВ, amber=ПАССИВ -->
-                            <BoxView Grid.Column="0"
-                                     WidthRequest="10" HeightRequest="10" CornerRadius="0"
-                                     VerticalOptions="Center" Margin="0,0,8,0"
-                                     Color="{StaticResource StatusAmber}">
-                                <BoxView.Style>
-                                    <Style TargetType="BoxView">
-                                        <Setter Property="Color" Value="{StaticResource StatusAmber}"/>
-                                        <Style.Triggers>
-                                            <DataTrigger TargetType="BoxView"
-                                                         Binding="{Binding IsActiveMode}" Value="True">
-                                                <Setter Property="Color" Value="{StaticResource PhosphorGreen}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </BoxView.Style>
-                            </BoxView>
-                            <Button Grid.Column="1"
-                                    Text="{Binding ModeLabel}"
-                                    Command="{Binding ToggleModeCommand}"
-                                    FontFamily="ShareTechMono" FontSize="20"
-                                    BackgroundColor="Transparent"
-                                    BorderColor="{StaticResource PhosphorGreenDim}"
-                                    BorderWidth="1"
-                                    TextColor="{StaticResource PhosphorGreen}"
-                                    Padding="4,4" />
-                        </Grid>
-                    </Border>
-
-                    <!-- Regulators section header -->
-                    <Label Grid.Row="2" Text="РЕГУЛЯТОРЫ" Style="{StaticResource SectionHeader}" />
-
-                    <!-- Vertical sliders (T038): custom SkiaSharp bar sliders (rectangular thumb, fixed 16px track) -->
-                    <Grid Grid.Row="3" ColumnDefinitions="*, *" VerticalOptions="Fill">
-
-                        <!-- Sensitivity column -->
-                        <Grid Grid.Column="0" RowDefinitions="Auto, *, Auto" HorizontalOptions="Center" VerticalOptions="Fill">
-                            <Label Grid.Row="0" Text="{Binding Sensitivity, StringFormat='{0}%'}"
-                                   Style="{StaticResource GaugeValue}" FontSize="20"/>
-                            <controls:VerticalBarSliderView Grid.Row="1"
-                                    Minimum="0" Maximum="100" BarWidth="16"
-                                    Value="{Binding Sensitivity, Mode=TwoWay}"
-                                    WidthRequest="40"
-                                    HorizontalOptions="Center" VerticalOptions="Fill" />
-                            <Label Grid.Row="2" Text="ЧУВСТВ." Style="{StaticResource GaugeName}"/>
-                        </Grid>
-
-                        <!-- Noise suppression column -->
-                        <Grid Grid.Column="1" RowDefinitions="Auto, *, Auto" HorizontalOptions="Center" VerticalOptions="Fill">
-                            <Label Grid.Row="0" Text="{Binding NoiseSuppression, StringFormat='{0}%'}"
-                                   Style="{StaticResource GaugeValue}" FontSize="20"/>
-                            <controls:VerticalBarSliderView Grid.Row="1"
-                                    Minimum="0" Maximum="100" BarWidth="16"
-                                    Value="{Binding NoiseSuppression, Mode=TwoWay}"
-                                    WidthRequest="40"
-                                    HorizontalOptions="Center" VerticalOptions="Fill" />
-                            <Label Grid.Row="2" Text="ПОМЕХИ" Style="{StaticResource GaugeName}"/>
-                        </Grid>
-
-                    </Grid>
-
+                <!-- Mode toggle: LED + Button (T039) -->
+                <Grid Grid.Row="0" ColumnDefinitions="Auto, *" Padding="2" Margin="2,2,2,6">
+                    <!-- LED indicator: green=АКТИВ, amber=ПАССИВ -->
+                    <BoxView Grid.Column="0"
+                             WidthRequest="10" HeightRequest="10" CornerRadius="0"
+                             VerticalOptions="Center" Margin="0,0,8,0"
+                             Color="{StaticResource StatusAmber}">
+                        <BoxView.Style>
+                            <Style TargetType="BoxView">
+                                <Setter Property="Color" Value="{StaticResource StatusAmber}"/>
+                                <Style.Triggers>
+                                    <DataTrigger TargetType="BoxView"
+                                                 Binding="{Binding IsActiveMode}" Value="True">
+                                        <Setter Property="Color" Value="{StaticResource PhosphorGreen}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </BoxView.Style>
+                    </BoxView>
+                    <Button Grid.Column="1"
+                            Text="{Binding ModeLabel}"
+                            Command="{Binding ToggleModeCommand}"
+                            FontFamily="ShareTechMono" FontSize="20"
+                            BackgroundColor="Transparent"
+                            BorderColor="{StaticResource PhosphorGreenDim}"
+                            BorderWidth="1"
+                            TextColor="{StaticResource PhosphorGreen}"
+                            Padding="4,4" />
                 </Grid>
-            </Border>
+
+                <!-- Vertical sliders (T038): AbsoluteLayout gives manual X/Y placement; container Margin/size and each
+                     slider's LayoutBounds (x, y, width, height in DIPs) can all be adjusted independently.
+                     Keep both sliders' height equal and vary their x to change the spacing between them. -->
+                <AbsoluteLayout Grid.Row="1"
+                                HorizontalOptions="Start" VerticalOptions="Start"
+                                Margin="-5, 320, 0, 0"
+                                WidthRequest="200" HeightRequest="160">
+
+                    <!-- Sensitivity slider -->
+                    <controls:VerticalBarSliderView
+                            AbsoluteLayout.LayoutFlags="None"
+                            AbsoluteLayout.LayoutBounds="0, 0, 40, 342"
+                            Minimum="0" Maximum="100" BarWidth="16"
+                            Value="{Binding Sensitivity, Mode=TwoWay}" />
+
+                    <!-- Noise suppression slider -->
+                    <controls:VerticalBarSliderView
+                            AbsoluteLayout.LayoutFlags="None"
+                            AbsoluteLayout.LayoutBounds="120, 0, 40, 342"
+                            Minimum="0" Maximum="100" BarWidth="16"
+                            Value="{Binding NoiseSuppression, Mode=TwoWay}" />
+
+                </AbsoluteLayout>
+
+            </Grid>
 
         </Grid>
 
         <!-- ── D: Chrono anomaly row ──────────────────────────────────────── -->
-        <Border Grid.Row="2" Style="{StaticResource PanelBorder}">
-            <Grid ColumnDefinitions="Auto, *, Auto, Auto" RowDefinitions="Auto">
-                <Label Text="ХРОНОАНОМАЛИЯ"
-                       FontFamily="ShareTechMono" FontSize="20" TextColor="#2A6640"
-                       VerticalOptions="Center" Margin="8,8,12,8" />
-                <Label Grid.Column="1"
-                       Text="{Binding ChronoValue, StringFormat='Δt {0:F4}с'}"
-                       Style="{StaticResource GaugeValue}" FontSize="20"
-                       VerticalOptions="Center" />
-                <ProgressBar Grid.Column="2"
-                             Progress="{Binding ChronoNormalized}"
-                             ProgressColor="{Binding ChronoStatus, Converter={StaticResource StatusColorConverter}}"
-                             HeightRequest="4" WidthRequest="80"
-                             VerticalOptions="Center" Margin="8,0" />
-                <Label Grid.Column="3"
-                       Text="{Binding ChronoStatus, Converter={StaticResource StatusTextConverter}}"
-                       TextColor="{Binding ChronoStatus, Converter={StaticResource StatusColorConverter}}"
-                       Style="{StaticResource GaugeStatus}" FontSize="20"
-                       VerticalOptions="Center" />
-            </Grid>
-        </Border>
-
-        <!-- ── E: Narrative (disabled) ────────────────────────────────────── -->
-        <Border Grid.Row="3" Style="{StaticResource PanelBorder}"
-                IsVisible="False">
-            <Label Text="{Binding Narrative}"
-                   FontFamily="ShareTechMono" FontSize="20"
-                   TextColor="{StaticResource PhosphorGreenDim}"
-                   LineBreakMode="WordWrap"
-                   Margin="8" />
-        </Border>
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,*" RowDefinitions="Auto">
+            
+            <Label Grid.Column="1"
+                   Text="{Binding ChronoValue, StringFormat='Δt {0:F4}с'}"
+                   Style="{StaticResource GaugeValue}" FontSize="20"
+                   VerticalOptions="Center" />            
+        </Grid>
 
         <!-- ── F: Infrasound spectrum ─────────────────────────────────────── -->
-        <Border Grid.Row="4" Style="{StaticResource PanelBorder}">
-            <StackLayout Spacing="4">
-                <Label Text="ИНФРАЗВУК  0 — 20 Гц" Style="{StaticResource SectionHeader}" />
-                <controls:InfrasoundCanvasView
-                    Bands="{Binding InfrasoundBands}"
-                    HeightRequest="120"
-                    HorizontalOptions="Fill" />
-            </StackLayout>
-        </Border>
+        <StackLayout Grid.Row="2" Spacing="4">
+            <Label Text="ИНФРАЗВУК  0 — 20 Гц" Style="{StaticResource SectionHeader}" />
+            <controls:InfrasoundCanvasView
+                Bands="{Binding InfrasoundBands}"
+                HeightRequest="120"
+                HorizontalOptions="Fill" />
+        </StackLayout>
 
     </Grid>
     </Grid>
