@@ -136,34 +136,26 @@
             <!-- Right column: Controls panel -->
             <Grid Grid.Column="1" RowDefinitions="Auto, *">
 
-                <!-- Mode toggle: LED + Button (T039) -->
-                <Grid Grid.Row="0" ColumnDefinitions="Auto, *" Padding="2" Margin="2,2,2,6">
-                    <!-- LED indicator: green=АКТИВ, amber=ПАССИВ -->
-                    <BoxView Grid.Column="0"
-                             WidthRequest="10" HeightRequest="10" CornerRadius="0"
-                             VerticalOptions="Center" Margin="0,0,8,0"
-                             Color="{StaticResource StatusAmber}">
-                        <BoxView.Style>
-                            <Style TargetType="BoxView">
-                                <Setter Property="Color" Value="{StaticResource StatusAmber}"/>
+                <!-- Mode toggle: background image only, no text/border/LED (T039) -->
+                <!-- Plain Image + tap gesture (not ImageButton) to avoid the native pressed/ripple flash -->
+                <Grid Grid.Row="0" Padding="2" Margin="70,90,2,6">
+                    <Image Source="passive_mode.png"
+                           Aspect="AspectFit">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ToggleModeCommand}" />
+                        </Image.GestureRecognizers>
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Source" Value="passive_mode.png"/>
                                 <Style.Triggers>
-                                    <DataTrigger TargetType="BoxView"
+                                    <DataTrigger TargetType="Image"
                                                  Binding="{Binding IsActiveMode}" Value="True">
-                                        <Setter Property="Color" Value="{StaticResource PhosphorGreen}"/>
+                                        <Setter Property="Source" Value="active_mode.png"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </BoxView.Style>
-                    </BoxView>
-                    <Button Grid.Column="1"
-                            Text="{Binding ModeLabel}"
-                            Command="{Binding ToggleModeCommand}"
-                            FontFamily="ShareTechMono" FontSize="20"
-                            BackgroundColor="Transparent"
-                            BorderColor="{StaticResource PhosphorGreenDim}"
-                            BorderWidth="1"
-                            TextColor="{StaticResource PhosphorGreen}"
-                            Padding="4,4" />
+                        </Image.Style>
+                    </Image>
                 </Grid>
 
                 <!-- Vertical sliders (T038): AbsoluteLayout gives manual X/Y placement; container Margin/size and each
