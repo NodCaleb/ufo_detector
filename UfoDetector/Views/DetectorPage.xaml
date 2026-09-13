@@ -13,19 +13,10 @@
         <converters:SensorStatusToColorConverter x:Key="StatusColorConverter" />
         <converters:SensorStatusToTextConverter  x:Key="StatusTextConverter"  />
 
-        <!-- Sensor name label -->
-        <Style x:Key="GaugeName" TargetType="Label">
-            <Setter Property="FontFamily"   Value="ShareTechMono" />
-            <Setter Property="FontSize"     Value="20" />
-            <Setter Property="TextColor"    Value="#2A6640" />
-            <Setter Property="HorizontalOptions" Value="Center" />
-            <Setter Property="Margin"       Value="8" />
-        </Style>
-
         <!-- Numeric value label -->
         <Style x:Key="GaugeValue" TargetType="Label">
             <Setter Property="FontFamily"   Value="ShareTechMono" />
-            <Setter Property="FontSize"     Value="20" />
+            <Setter Property="FontSize"     Value="28" />
             <Setter Property="TextColor"    Value="{StaticResource PhosphorGreen}" />
             <Setter Property="HorizontalOptions" Value="Center" />
             <Setter Property="Margin"       Value="8" />
@@ -34,36 +25,12 @@
         <!-- Unit label -->
         <Style x:Key="GaugeUnit" TargetType="Label">
             <Setter Property="FontFamily"   Value="ShareTechMono" />
-            <Setter Property="FontSize"     Value="20" />
+            <Setter Property="FontSize"     Value="28" />
             <Setter Property="TextColor"    Value="#7DFF9A" />
             <Setter Property="HorizontalOptions" Value="Center" />
             <Setter Property="Margin"       Value="8" />
         </Style>
 
-        <!-- Status label (НОРМА / ПОВЫШЕН / …) -->
-        <Style x:Key="GaugeStatus" TargetType="Label">
-            <Setter Property="FontFamily"   Value="ShareTechMono" />
-            <Setter Property="FontSize"     Value="20" />
-            <Setter Property="FontAttributes" Value="Bold" />
-            <Setter Property="TextColor"    Value="{StaticResource PhosphorGreen}" />
-            <Setter Property="HorizontalOptions" Value="Center" />
-            <Setter Property="Margin"       Value="8" />
-        </Style>
-
-        <!-- Fill bar -->
-        <Style x:Key="GaugeBar" TargetType="ProgressBar">
-            <Setter Property="ProgressColor" Value="{StaticResource PhosphorGreen}" />
-            <Setter Property="HeightRequest" Value="4" />
-            <Setter Property="HorizontalOptions" Value="Fill" />
-        </Style>
-
-        <!-- Section header -->
-        <Style x:Key="SectionHeader" TargetType="Label">
-            <Setter Property="FontFamily"     Value="ShareTechMono" />
-            <Setter Property="FontSize"       Value="20" />
-            <Setter Property="TextColor"      Value="#2A6640" />
-            <Setter Property="Margin"         Value="8" />
-        </Style>
     </ContentPage.Resources>
 
     <!-- Root: background image behind header + body -->
@@ -74,136 +41,130 @@
                HorizontalOptions="Fill"
                VerticalOptions="Fill" />
 
-    <Grid RowDefinitions="Auto, Auto, *">
+        <Grid RowDefinitions="815, 240, 80, *">
 
-        <!-- ── B + C: Radar left, Controls right ─────────────────────────── -->
-        <Grid Grid.Row="0" ColumnDefinitions="Auto, *">
+            <!-- A: Radar left, Controls right ─────────────────────────── -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto, *">
 
-            <!-- Left column: Radar + 4 sensors -->
-            <Grid RowDefinitions="Auto, *">
-
-                <!-- Radar -->
+                <!-- Left column: Radar -->
                 <Grid Grid.Row="0" RowDefinitions="Auto, *, Auto">
                     <!-- AbsoluteLayout gives pixel-style X/Y placement; LayoutBounds = x, y, width, height in DIPs -->
                     <AbsoluteLayout Grid.Row="1">
                         <controls:RadarCanvasView
-                            AbsoluteLayout.LayoutFlags="None"
-                            AbsoluteLayout.LayoutBounds="95, 165, 475, 475"
-                            ActiveAnomaly="{Binding ActiveAnomaly}"
-                            Phase="{Binding Phase}" />
+                        AbsoluteLayout.LayoutFlags="None"
+                        AbsoluteLayout.LayoutBounds="95, 165, 475, 475"
+                        ActiveAnomaly="{Binding ActiveAnomaly}"
+                        Phase="{Binding Phase}" />
                     </AbsoluteLayout>
                 </Grid>
 
-                <!-- C: sensor gauges — single row of 4 vertical meters -->
-                <Grid Grid.Row="1" ColumnDefinitions="*, *, *, *">
+                <!-- Right column: Controls panel -->
+                <Grid Grid.Column="1" RowDefinitions="Auto, *">
 
-                    <!-- C1: Neutron gauge -->
-                    <AbsoluteLayout Grid.Column="0">
-                        <Label Text="{Binding NeutronValue, StringFormat='{0:F1}'}" Style="{StaticResource GaugeValue}"
-                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="50, 0, 100, 30" />
-                        <Label Text="{Binding NeutronUnit}" Style="{StaticResource GaugeUnit}"
-                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="50, 35, 100, 30" />
-                    </AbsoluteLayout>
-
-                    <!-- C2: Ionisation gauge -->
-                    <AbsoluteLayout Grid.Column="1">
-                        <Label Text="{Binding IonisationValue, StringFormat='{0:F0}'}" Style="{StaticResource GaugeValue}"
-                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="0, 40, 100, 30" />
-                        <Label Text="{Binding IonisationUnit}" Style="{StaticResource GaugeUnit}"
-                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="0, 75, 100, 30" />
-                    </AbsoluteLayout>
-
-                    <!-- C3: Geomagnetic gauge -->
-                    <AbsoluteLayout Grid.Column="2">
-                        <Label Text="{Binding GeomagneticValue, StringFormat='{0:F0}'}" Style="{StaticResource GaugeValue}"
-                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="0, 40, 100, 30" />
-                        <Label Text="{Binding GeomagneticUnit}" Style="{StaticResource GaugeUnit}"
-                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="0, 75, 100, 30" />
-                    </AbsoluteLayout>
-
-                    <!-- C4: Thermal gauge -->
-                    <AbsoluteLayout Grid.Column="3">
-                        <Label Text="{Binding ThermalValue, StringFormat='{0:F2}'}" Style="{StaticResource GaugeValue}"
-                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="0, 40, 100, 30" />
-                        <Label Text="{Binding ThermalUnit}" Style="{StaticResource GaugeUnit}"
-                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="0, 75, 100, 30" />
-                    </AbsoluteLayout>
-
-                </Grid>
-
-            </Grid>
-
-            <!-- Right column: Controls panel -->
-            <Grid Grid.Column="1" RowDefinitions="Auto, *">
-
-                <!-- Mode toggle: background image only, no text/border/LED (T039) -->
-                <!-- Plain Image + tap gesture (not ImageButton) to avoid the native pressed/ripple flash -->
-                <Grid Grid.Row="0" Padding="2" Margin="70,90,2,6">
-                    <Image Source="passive_mode.png"
+                    <!-- Mode toggle: background image only, no text/border/LED (T039) -->
+                    <!-- Plain Image + tap gesture (not ImageButton) to avoid the native pressed/ripple flash -->
+                    <Grid Grid.Row="0" Padding="2" Margin="70,90,2,6">
+                        <Image Source="passive_mode.png"
                            Aspect="AspectFit">
-                        <Image.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding ToggleModeCommand}" />
-                        </Image.GestureRecognizers>
-                        <Image.Style>
-                            <Style TargetType="Image">
-                                <Setter Property="Source" Value="passive_mode.png"/>
-                                <Style.Triggers>
-                                    <DataTrigger TargetType="Image"
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ToggleModeCommand}" />
+                            </Image.GestureRecognizers>
+                            <Image.Style>
+                                <Style TargetType="Image">
+                                    <Setter Property="Source" Value="passive_mode.png"/>
+                                    <Style.Triggers>
+                                        <DataTrigger TargetType="Image"
                                                  Binding="{Binding IsActiveMode}" Value="True">
-                                        <Setter Property="Source" Value="active_mode.png"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Image.Style>
-                    </Image>
-                </Grid>
+                                            <Setter Property="Source" Value="active_mode.png"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </Grid>
 
-                <!-- Vertical sliders (T038): AbsoluteLayout gives manual X/Y placement; container Margin/size and each
+                    <!-- Vertical sliders (T038): AbsoluteLayout gives manual X/Y placement; container Margin/size and each
                      slider's LayoutBounds (x, y, width, height in DIPs) can all be adjusted independently.
                      Keep both sliders' height equal and vary their x to change the spacing between them. -->
-                <AbsoluteLayout Grid.Row="1"
+                    <AbsoluteLayout Grid.Row="1"
                                 HorizontalOptions="Start" VerticalOptions="Start"
                                 Margin="145, 115, 0, 0"
                                 WidthRequest="200" HeightRequest="160">
 
-                    <!-- Sensitivity slider -->
-                    <controls:VerticalBarSliderView
+                        <!-- Sensitivity slider -->
+                        <controls:VerticalBarSliderView
                             AbsoluteLayout.LayoutFlags="None"
                             AbsoluteLayout.LayoutBounds="0, 0, 40, 342"
                             Minimum="0" Maximum="100" BarWidth="16"
                             Value="{Binding Sensitivity, Mode=TwoWay}" />
 
-                    <!-- Noise suppression slider -->
-                    <controls:VerticalBarSliderView
+                        <!-- Noise suppression slider -->
+                        <controls:VerticalBarSliderView
                             AbsoluteLayout.LayoutFlags="None"
                             AbsoluteLayout.LayoutBounds="121, 0, 40, 342"
                             Minimum="0" Maximum="100" BarWidth="16"
                             Value="{Binding NoiseSuppression, Mode=TwoWay}" />
 
+                    </AbsoluteLayout>
+
+                </Grid>
+
+            </Grid>
+            
+            <!-- B: sensor gauges — single row of 4 vertical meters -->
+            <Grid Grid.Row="1" ColumnDefinitions="*, *, *, *">
+
+                <!-- C1: Neutron gauge -->
+                <AbsoluteLayout Grid.Column="0">
+                    <Label Text="{Binding NeutronValue, StringFormat='{0:F1}'}" Style="{StaticResource GaugeValue}"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="80, 75, 100, 40" />
+                    <Label Text="{Binding NeutronUnit}" Style="{StaticResource GaugeUnit}"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="80, 110, 100, 40" />
+                </AbsoluteLayout>
+
+                <!-- C2: Ionisation gauge -->
+                <AbsoluteLayout Grid.Column="1">
+                    <Label Text="{Binding IonisationValue, StringFormat='{0:F0}'}" Style="{StaticResource GaugeValue}"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="75, 75, 100, 40" />
+                    <Label Text="{Binding IonisationUnit}" Style="{StaticResource GaugeUnit}"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="75, 110, 100, 40" />
+                </AbsoluteLayout>
+
+                <!-- C3: Geomagnetic gauge -->
+                <AbsoluteLayout Grid.Column="2">
+                    <Label Text="{Binding GeomagneticValue, StringFormat='{0:F0}'}" Style="{StaticResource GaugeValue}"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="65, 75, 100, 40" />
+                    <Label Text="{Binding GeomagneticUnit}" Style="{StaticResource GaugeUnit}"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="65, 110, 100, 40" />
+                </AbsoluteLayout>
+
+                <!-- C4: Thermal gauge -->
+                <AbsoluteLayout Grid.Column="3">
+                    <Label Text="{Binding ThermalValue, StringFormat='{0:F2}'}" Style="{StaticResource GaugeValue}"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="55, 75, 100, 40" />
+                    <Label Text="{Binding ThermalUnit}" Style="{StaticResource GaugeUnit}"
+                               AbsoluteLayout.LayoutFlags="None" AbsoluteLayout.LayoutBounds="55, 110, 100, 40" />
                 </AbsoluteLayout>
 
             </Grid>
 
-        </Grid>
+            <!-- C: Chrono anomaly row ──────────────────────────────────────── -->
+            <Grid Grid.Row="2" ColumnDefinitions="Auto,*" RowDefinitions="Auto">
 
-        <!-- ── D: Chrono anomaly row ──────────────────────────────────────── -->
-        <Grid Grid.Row="1" ColumnDefinitions="Auto,*" RowDefinitions="Auto">
-            
-            <Label Grid.Column="1"
+                <Label Grid.Column="1"
                    Text="{Binding ChronoValue, StringFormat='Δt {0:F4}с'}"
                    Style="{StaticResource GaugeValue}" FontSize="20"
-                   VerticalOptions="Center" />            
-        </Grid>
+                   VerticalOptions="Center" />
+            </Grid>
 
-        <!-- ── F: Infrasound spectrum ─────────────────────────────────────── -->
-        <StackLayout Grid.Row="2" Spacing="4">
-            <Label Text="ИНФРАЗВУК  0 — 20 Гц" Style="{StaticResource SectionHeader}" />
-            <controls:InfrasoundCanvasView
+            <!-- D: Infrasound spectrum ─────────────────────────────────────── -->
+            <StackLayout Grid.Row="3" Spacing="4">
+                <controls:InfrasoundCanvasView
                 Bands="{Binding InfrasoundBands}"
                 HeightRequest="120"
                 HorizontalOptions="Fill" />
-        </StackLayout>
+            </StackLayout>
 
-    </Grid>
+        </Grid>
     </Grid>
 </ContentPage>
