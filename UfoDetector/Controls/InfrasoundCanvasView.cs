@@ -24,13 +24,10 @@ public class InfrasoundCanvasView : SKGLView
         set => SetValue(BandsProperty, value);
     }
 
-    // ── Pre-allocated paints ─────────────────────────────────────────────────
-    private readonly SKPaint _bgPaint = new()
-    {
-        Color = new SKColor(6, 12, 6),
-        Style = SKPaintStyle.Fill,
-    };
+    // Bars are downsampled to this count for display, independent of the source bin count
+    private const int DisplayBarCount = 17;
 
+    // ── Pre-allocated paints ─────────────────────────────────────────────────
     private readonly SKPaint _barPaint = new()
     {
         Color = new SKColor(57, 255, 20, 210),
@@ -43,8 +40,6 @@ public class InfrasoundCanvasView : SKGLView
         Style = SKPaintStyle.Fill,
     };
 
-    private readonly SKPaint _thresholdPaint;
-
     // Reusable struct — assigned per bar, no heap allocation
     private SKRect _barRect;
 
@@ -54,15 +49,6 @@ public class InfrasoundCanvasView : SKGLView
         // which already calls InvalidateSurface(). A second always-on GL loop next to the
         // radar's would double concurrent GPU work and starve both on low-power hardware.
         HasRenderLoop = false;
-
-        // Dashed threshold line — PathEffect allocated once, never inside PaintSurface
-        _thresholdPaint = new SKPaint
-        {
-            Color = new SKColor(255, 179, 0, 160),
-            Style = SKPaintStyle.Stroke,
-            StrokeWidth = 1,
-            PathEffect = SKPathEffect.CreateDash([4f, 4f], 0f),
-        };
     }
 
     protected override void OnPaintSurface(SKPaintGLSurfaceEventArgs e)
@@ -71,19 +57,18 @@ public class InfrasoundCanvasView : SKGLView
         int w = e.Info.Width;
         int h = e.Info.Height;
 
-        canvas.DrawRect(0, 0, w, h, _bgPaint);
-
         var bands = Bands;
         if (bands == null || bands.Length == 0)
             return;
 
-        int binCount = bands.Length; // always 20
-        float barW = (float)w / binCount;
+        float barW = (float)w / DisplayBarCount;
 
-        for (int i = 0; i < binCount; i++)
+        for (int i = 0; i < DisplayBarCount; i++)
         {
-            float barH = (float)(bands[i] * h);
-            bool aboveAlarm = bands[i] > AlarmThreshold;
+            // Nearest-neighbor downsample from the source bin count to DisplayBarCount
+            int srcIndex = Math.Clamp((int)((i + 0.5f) * bands.Length / DisplayBarCount), 0, bands.Length - 1);
+            float barH = (float)(bands[srcIndex] * h);
+            bool aboveAlarm = bands[srcIndex] > AlarmThreshold;
 
             // SKRect is a value type — assignment is a field write, zero allocation
             _barRect = new SKRect(
@@ -93,9 +78,5 @@ public class InfrasoundCanvasView : SKGLView
                 h);
             canvas.DrawRect(_barRect, aboveAlarm ? _alarmBarPaint : _barPaint);
         }
-
-        // Dashed alarm threshold line
-        float threshY = (float)(h - AlarmThreshold * h);
-        canvas.DrawLine(0, threshY, w, threshY, _thresholdPaint);
     }
 }

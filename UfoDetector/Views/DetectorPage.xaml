@@ -186,12 +186,12 @@
             </Grid>
 
             <!-- D: Infrasound spectrum ─────────────────────────────────────── -->
-            <StackLayout Grid.Row="3" Spacing="4">
+            <AbsoluteLayout Grid.Row="3">
                 <controls:InfrasoundCanvasView
-                Bands="{Binding InfrasoundBands}"
-                HeightRequest="120"
-                HorizontalOptions="Fill" />
-            </StackLayout>
+                    Bands="{Binding InfrasoundBands}"
+                    AbsoluteLayout.LayoutFlags="None"
+                    AbsoluteLayout.LayoutBounds="79, 72, 815, 120" />
+            </AbsoluteLayout>
 
         </Grid>
     </Grid>
