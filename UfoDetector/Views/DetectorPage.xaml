@@ -163,7 +163,7 @@
                      Keep both sliders' height equal and vary their x to change the spacing between them. -->
                 <AbsoluteLayout Grid.Row="1"
                                 HorizontalOptions="Start" VerticalOptions="Start"
-                                Margin="-5, 320, 0, 0"
+                                Margin="145, 115, 0, 0"
                                 WidthRequest="200" HeightRequest="160">
 
                     <!-- Sensitivity slider -->
@@ -176,7 +176,7 @@
                     <!-- Noise suppression slider -->
                     <controls:VerticalBarSliderView
                             AbsoluteLayout.LayoutFlags="None"
-                            AbsoluteLayout.LayoutBounds="120, 0, 40, 342"
+                            AbsoluteLayout.LayoutBounds="121, 0, 40, 342"
                             Minimum="0" Maximum="100" BarWidth="16"
                             Value="{Binding NoiseSuppression, Mode=TwoWay}" />
 
